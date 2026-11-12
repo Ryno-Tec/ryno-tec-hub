@@ -26,7 +26,8 @@ window.HUB_CONFIG = {
     "contracts": "49a373e9-016a-425e-80c7-bf15518a28ac",
     "subscriptions": "0b2fffe6-6477-4184-ad9a-bc7f8b40cf98",
     "tenders": "9c31c22c-1712-4a09-be4d-55e3a1373c06",
-    "compliance": "4a62293c-9811-450d-b361-266948aac0a8"
+    "compliance": "4a62293c-9811-450d-b361-266948aac0a8",
+    "archive": "159913b8-de4b-416a-a307-b47b6f2a3bce"
   },
   "complianceDrive": "b!iOkCYP0CyUSNcxjlgTyXNSFrM5f9QXFMsqE5fBBwH6BSlBoRwzg0S5Ffmn0tk4Uw",
   "complianceUrl": "https://rynotecconsulting.sharepoint.com/sites/rynotechub/Compliance"
