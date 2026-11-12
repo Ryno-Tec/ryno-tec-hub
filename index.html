@@ -1,0 +1,2215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ryno-Tec Business Hub</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231a1a1a'/%3E%3Csvg x='7' y='7' width='50' height='50' viewBox='50 -10 320 320'%3E%3Cpath d='M80 300 V80 H200 L240 120 V190 L200 230 H80' fill='none' stroke='%23ffffff' stroke-width='46'/%3E%3Cpath d='M155 230 L340 280' fill='none' stroke='%23ffffff' stroke-width='46'/%3E%3Cpath d='M254.1 226.4 L341.1 249.2' fill='none' stroke='%23ff6b35' stroke-width='40'/%3E%3Cpolygon points='313.6,245.9 351.2,136.4 347.6,134.6 281.6,229.7' fill='%23ff6b35'/%3E%3C/svg%3E%3C/svg%3E">
+<style>
+/* Layout: dark brand rail (matches site header) + light working area (matches site's #f5f5f5 sections), white cards. */
+:root{
+  --rail:#1a1a1a;--rail-2:#2d2d2d;--rail-ink:#e2e8f0;--rail-muted:#9aa0a6;--rail-line:#333333;
+  --bg:#f5f5f5;--surface:#ffffff;--sunk:#ececec;--ink:#1a1a1a;--text:#333333;--muted:#666666;--line:#e0e0e0;
+  --accent:#ff6b35;--accent-hover:#e55a1f;--accent-ink:#c4471a;--accent-soft:#fff0ea;--on-accent:#1a1a1a;
+  --good:#2e7d4f;--warn:#a86400;--bad:#c0392b;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --rail:#141414;--rail-2:#262626;--rail-line:#333333;
+    --bg:#1a1a1a;--surface:#2d2d2d;--sunk:#242424;--ink:#ffffff;--text:#e6e6e6;--muted:#b0b0b0;--line:#404040;
+    --accent-ink:#ff8a5c;--accent-soft:#3a2a22;
+    --good:#5fbf8a;--warn:#f0b44c;--bad:#ff6b6b;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --rail:#141414;--rail-2:#262626;--rail-line:#333333;
+  --bg:#1a1a1a;--surface:#2d2d2d;--sunk:#242424;--ink:#ffffff;--text:#e6e6e6;--muted:#b0b0b0;--line:#404040;
+  --accent-ink:#ff8a5c;--accent-soft:#3a2a22;
+  --good:#5fbf8a;--warn:#f0b44c;--bad:#ff6b6b;color-scheme:dark;
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font:15px/1.6 var(--font);font-variant-numeric:tabular-nums}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--accent-ink)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* rail — same treatment as the website header */
+.app{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100vh}
+.rail{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--rail);color:var(--rail-ink);
+  padding:22px 14px 18px;display:flex;flex-direction:column;gap:20px;border-right:1px solid var(--rail-line)}
+.brand{display:flex;align-items:center;gap:10px;margin:0 6px;color:#fff;text-decoration:none}
+.brand svg{width:38px;height:38px;flex:none}
+.brand b{display:block;font-size:17px;font-weight:700;letter-spacing:0;line-height:1.15}
+.brand small{display:block;font-size:12.5px;font-weight:400;color:var(--rail-muted);letter-spacing:.2px}
+.navgroup+.navgroup{margin-top:12px}
+.navgroup h3{font-size:11.5px;font-weight:600;color:var(--rail-muted);margin:0 0 4px 10px;text-transform:uppercase;letter-spacing:.6px}
+.navgroup a{display:block;padding:7px 10px;border-radius:4px;text-decoration:none;color:var(--rail-ink);font-size:14.5px;transition:color .2s,background .2s}
+.navgroup a:hover{color:var(--accent);background:var(--rail-2)}
+.navgroup a[aria-current="page"]{background:var(--rail-2);color:#fff;box-shadow:inset 3px 0 0 var(--accent)}
+.links{display:flex;flex-direction:column;gap:2px;margin:0 0 -4px}
+.site{display:block;padding:5px 10px;font-size:13.5px;color:var(--rail-ink);text-decoration:none;border-radius:4px}
+.site:hover{color:var(--accent)}
+.sync{margin-top:auto;font-size:12.5px;color:var(--rail-muted);display:flex;gap:8px;align-items:flex-start;padding:0 6px}
+.sync i{width:8px;height:8px;border-radius:50%;background:#f0b44c;margin-top:6px;flex:none}
+.sync.on i{background:#5fbf8a}
+.mbar{display:none}
+main{padding:32px clamp(16px,4vw,48px) 64px;max-width:1400px;width:100%}
+
+/* page heads */
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+h1{font-size:30px;line-height:1.15;letter-spacing:-.5px;margin:0;color:var(--ink);font-weight:700}
+.sub{color:var(--muted);margin:6px 0 0;max-width:64ch}
+h2{font-size:18px;letter-spacing:-.2px;margin:0;color:var(--ink);font-weight:600}
+
+.btn{display:inline-flex;align-items:center;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:4px;padding:9px 16px;font-weight:600;font-size:14.5px;cursor:pointer;white-space:nowrap;text-decoration:none;transition:border-color .2s,background .2s,transform .2s}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.primary:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+.btn.danger{color:var(--bad)}
+.btn.danger.armed{background:var(--bad);color:#fff;border-color:var(--bad)}
+.btn.small{padding:6px 11px;font-size:13.5px}
+.link{background:none;border:0;padding:0;color:var(--accent-ink);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+
+/* toolbar */
+.toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.toolbar input[type=search]{flex:1 1 220px;max-width:340px;padding:9px 12px;border:1px solid var(--line);border-radius:4px;background:var(--surface)}
+.toolbar input[type=search]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(255,107,53,.15)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:3px;padding:5px 11px;font-size:13.5px;font-weight:500;cursor:pointer;color:var(--text)}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip b{font-weight:600;opacity:.6;margin-left:5px}
+
+/* tables */
+.tablewrap{background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow-x:auto;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:12px;font-weight:600;color:var(--muted);padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap;text-transform:uppercase;letter-spacing:.5px}
+td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+tbody tr{cursor:pointer;transition:background .15s}
+tbody tr:hover{background:var(--accent-soft)}
+td.primary{font-weight:600;color:var(--ink)}
+.num{text-align:right;white-space:nowrap}
+.late{color:var(--bad);font-weight:600}
+.muted{color:var(--muted)}
+
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;white-space:nowrap}
+.badge::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--muted)}
+.badge.good::before{background:var(--good)}
+.badge.warn::before{background:var(--warn)}
+.badge.bad::before{background:var(--bad)}
+.badge.bad{color:var(--bad);font-weight:600}
+
+.empty{border:1px dashed var(--line);border-radius:6px;padding:28px 20px;text-align:center;color:var(--muted);background:var(--surface)}
+.empty p{margin:0 0 12px}
+
+/* dashboard hero — same dark gradient as the website hero */
+.hero{background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 100%);color:#fff;border-radius:6px;padding:28px clamp(20px,3vw,36px) 30px;margin-bottom:24px;border:1px solid #333}
+.hero h1{color:#cfd3d8;font-size:15px;font-weight:500;letter-spacing:.2px}
+.hero .headline{color:#fff;margin:10px 0 0}
+.hero .btn{background:transparent;color:#fff;border:2px solid #fff}
+.hero .btn:hover{background:rgba(255,255,255,.1);border-color:#fff}
+.hero .btn.primary{background:var(--accent);border-color:var(--accent);color:#1a1a1a}
+.hero-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.headline{font-size:clamp(22px,3.2vw,34px);line-height:1.25;letter-spacing:-.5px;font-weight:700;max-width:26ch;margin:4px 0 28px;color:var(--ink)}
+.headline .q{color:var(--accent)}
+.headline .bad{color:#ff8a6b}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));background:var(--surface);border:1px solid var(--line);border-radius:6px;margin-bottom:28px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.stat{padding:16px 18px;border-right:1px solid var(--line)}
+.stat:last-child{border-right:0}
+.stat span{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.stat strong{display:block;font-size:24px;letter-spacing:-.5px;margin-top:4px;color:var(--ink)}
+.stat em{font-style:normal;font-size:12.5px;color:var(--muted)}
+.cols{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px}
+.panel h2{margin-bottom:10px}
+.panel+.panel{margin-top:28px}
+.attn{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.attn li{border-bottom:1px solid var(--line)}
+.attn li:last-child{border-bottom:0}
+.attn button{all:unset;box-sizing:border-box;display:flex;gap:12px;width:100%;padding:12px 14px;cursor:pointer;color:var(--text)}
+.attn button:hover{background:var(--accent-soft)}
+.attn button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.attn .why{font-size:13px;color:var(--muted);margin-left:auto;text-align:right;white-space:nowrap}
+.attn .tag{flex:none;width:4px;border-radius:2px;background:var(--warn)}
+.attn .tag.bad{background:var(--bad)}
+.clear{padding:14px;color:var(--muted)}
+.bars{display:grid;gap:8px}
+.bar{display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:10px;align-items:center;font-size:14px}
+.bar .track{height:10px;background:var(--sunk);border-radius:3px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent);border-radius:3px}
+.money{display:grid;grid-template-columns:1fr auto;gap:8px 16px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:6px;padding:16px 18px;margin:0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.money dt{color:var(--muted)}
+.money dd{margin:0;text-align:right;font-weight:600;color:var(--ink)}
+.money .total{border-top:1px solid var(--line);padding-top:8px}
+.meter{grid-column:1/-1;height:8px;background:var(--sunk);border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent)}
+
+/* pipeline */
+.board{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(230px,1fr);gap:12px;overflow-x:auto;padding-bottom:8px}
+.lane{background:var(--sunk);border-radius:6px;padding:10px;min-height:120px}
+.lane header{display:flex;justify-content:space-between;align-items:baseline;padding:2px 4px 10px}
+.lane header b{font-size:14px;color:var(--ink)}
+.lane header span{font-size:12.5px;color:var(--muted)}
+.card{display:block;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:11px 13px;margin-bottom:8px;cursor:pointer;color:var(--text);transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.card b{display:block;font-weight:600;color:var(--ink)}
+.card small{display:block;color:var(--muted);font-size:13px}
+.card .v{margin-top:6px;font-weight:600;color:var(--ink)}
+
+/* project */
+.crumb{font-size:14px;margin-bottom:8px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:24px 0 16px;overflow-x:auto}
+.tab{background:none;border:0;border-bottom:3px solid transparent;padding:9px 12px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.sechead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:12px}
+.scope{white-space:pre-wrap;max-width:70ch;color:var(--muted);margin:8px 0 0}
+
+/* dialog — same as the Business Hub login card */
+dialog{border:1px solid var(--line);border-radius:8px;padding:0;width:min(640px,calc(100vw - 24px));max-height:calc(100vh - 32px);background:var(--surface);color:var(--text);box-shadow:0 15px 40px rgba(0,0,0,.25)}
+dialog::backdrop{background:rgba(10,10,10,.6)}
+dialog form{display:flex;flex-direction:column;max-height:calc(100vh - 34px)}
+.dhead{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 100%);color:#fff;border-radius:7px 7px 0 0}
+.dhead h2{color:#fff}
+.x{background:none;border:0;font-size:24px;line-height:1;cursor:pointer;color:#cfd3d8;padding:4px 8px}
+.x:hover{color:var(--accent)}
+.fields{padding:18px 20px;overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}
+.f{display:flex;flex-direction:column;gap:6px}
+.f.wide{grid-column:1/-1}
+.f label{font-size:13px;font-weight:600;color:var(--ink)}
+.f label i{font-style:normal;color:var(--bad)}
+.f input,.f select,.f textarea{padding:10px 12px;border:1px solid var(--line);border-radius:4px;background:var(--bg);width:100%;transition:border-color .2s}
+.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(255,107,53,.15)}
+.f textarea{min-height:92px;resize:vertical}
+.f .hint{font-size:12.5px;color:var(--muted)}
+.check{flex-direction:row;align-items:center;gap:9px;padding-top:24px}
+.check input{width:18px;height:18px;accent-color:var(--accent)}
+.dfoot{display:flex;gap:10px;align-items:center;padding:14px 20px;border-top:1px solid var(--line);flex-wrap:wrap}
+.spacer{flex:1}
+.meta{font-size:12.5px;color:var(--muted)}
+
+#viewer{width:min(960px,calc(100vw - 24px));height:calc(100vh - 48px);max-height:none}
+#viewer .vwrap{display:flex;flex-direction:column;height:100%}
+#viewer .vbody{flex:1;min-height:0;background:var(--sunk);display:flex;align-items:center;justify-content:center;overflow:auto}
+#viewer .vbody .pages{align-self:flex-start;display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px;width:100%}
+#viewer .vbody canvas{background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.2);max-width:100%;height:auto}
+#viewer .vbody img{max-width:100%;max-height:100%;object-fit:contain}
+#viewer .vbody p{padding:24px;text-align:center;color:var(--muted);max-width:46ch}
+@media (max-width:640px){#viewer{width:100vw;height:100%;max-width:100vw;margin:0;border-radius:0;border:0}}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#1a1a1a;color:#fff;border-left:4px solid var(--accent);padding:10px 16px;border-radius:4px;font-weight:500;opacity:0;pointer-events:none;transition:opacity .2s;max-width:calc(100vw - 32px);z-index:40}
+#toast.show{opacity:1}
+
+/* responsive */
+@media (max-width:980px){.cols{grid-template-columns:1fr}}
+@media (max-width:820px){
+  .app{grid-template-columns:1fr}
+  .mbar{display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:10;
+    background:var(--rail);color:#fff;border-bottom:1px solid var(--rail-line);padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top,0px));margin-top:calc(-1 * env(safe-area-inset-top,0px))}
+  .mbar .brand{margin:0}
+  .mbar .brand svg{width:30px;height:30px}
+  .mbar #mtitle{color:var(--rail-muted);font-size:13px}
+  .mbar .btn{background:transparent;color:#fff;border-color:#555}
+  .mbar .btn:hover{border-color:var(--accent)}
+  .rail{position:fixed;inset:0;z-index:30;height:100%;transform:translateX(-100%);transition:transform .2s;width:min(300px,86vw);
+    padding-top:calc(22px + env(safe-area-inset-top,0px))}
+  .rail.open{transform:none;box-shadow:0 0 40px rgba(0,0,0,.35)}
+  .scrim{position:fixed;inset:0;background:rgba(10,10,10,.6);z-index:25;display:none}
+  .scrim.open{display:block}
+  main{padding-top:20px}
+}
+@media (max-width:640px){
+  .fields{grid-template-columns:1fr}
+  .check{padding-top:0}
+  dialog{width:100vw;max-width:100vw;height:100%;max-height:100%;border-radius:0;margin:0;border:0}
+  dialog form{height:100%;max-height:100%;padding-bottom:env(safe-area-inset-bottom,0px)}
+  .dhead{border-radius:0;padding-top:calc(16px + env(safe-area-inset-top,0px))}
+  .fields{flex:1}
+  .tablewrap{background:transparent;border:0;overflow:visible;box-shadow:none}
+  table,thead,tbody,tr,td{display:block}
+  thead{display:none}
+  tbody tr{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:6px;padding:10px 14px;margin-bottom:10px}
+  td{border:0;padding:3px 0;display:flex;justify-content:space-between;gap:16px}
+  td::before{content:attr(data-label);color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+  td.primary{font-size:16px;padding-bottom:6px}
+  td.primary::before{content:none}
+  .num{text-align:right}
+  .stat{border-right:0;border-bottom:1px solid var(--line)}
+  .bar{grid-template-columns:84px minmax(0,1fr) auto}
+  .hero{padding:22px 18px}
+}
+
+/* mail */
+.msearch{flex:1 1 220px;max-width:340px;margin:0}
+.msearch input{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:4px;background:var(--surface)}
+.msearch input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(255,107,53,.15)}
+.maillist{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.maillist li{border-bottom:1px solid var(--line)}
+.maillist li:last-child{border-bottom:0}
+.maillist a{display:grid;grid-template-columns:200px minmax(0,1fr) auto;gap:14px;padding:12px 16px;color:var(--text);text-decoration:none;align-items:baseline}
+.maillist a:hover{background:var(--accent-soft)}
+.maillist a.unread{box-shadow:inset 3px 0 0 var(--accent)}
+.maillist a.unread .who,.maillist a.unread .what b{color:var(--ink);font-weight:700}
+.maillist .who{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.maillist .who i{font-style:normal;color:var(--muted);font-size:12.5px}
+.maillist .what{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.maillist .what b{font-weight:600;margin-right:8px}
+.maillist .snip{color:var(--muted)}
+.maillist .when{font-size:13px;color:var(--muted);white-space:nowrap}
+.cchip{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 7px;border-radius:3px;background:var(--accent-soft);color:var(--accent-ink);margin-right:8px;vertical-align:1px}
+.note-box{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:6px;padding:12px 16px}
+.note-box summary{cursor:pointer;font-weight:600;color:var(--ink)}
+.note-box ol{margin:10px 0 0;padding-left:20px;color:var(--text)}
+.note-box li{margin:4px 0}
+.warn-text{color:var(--warn)}
+.row-btns{display:flex;gap:8px;flex-wrap:wrap}
+.thread{display:grid;gap:12px}
+.msg{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 18px;box-shadow:0 1px 3px rgba(0,0,0,.05);min-width:0}
+.msg header{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.msg b{color:var(--ink)}
+.small{font-size:12.5px}
+.mbody{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14.5px;line-height:1.6}
+.msg details summary{cursor:pointer;color:var(--accent-ink);font-weight:600}
+.reply{margin-top:20px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:6px;padding:16px 18px}
+.reply h2{margin-bottom:10px}
+.reply textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:4px;background:var(--bg);resize:vertical;min-height:160px}
+.reply textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(255,107,53,.15)}
+.reply textarea[aria-busy="true"]{border-color:var(--accent)}
+.reply-foot{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.inline{display:inline-flex;gap:7px;align-items:center;font-size:14px}
+.inline input{accent-color:var(--accent);width:16px;height:16px}
+/* quotes */
+dialog.wide{width:min(940px,calc(100vw - 24px))}
+.qitems-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:4px}
+.qitems{width:100%;border-collapse:collapse;min-width:620px}
+.qitems th{background:var(--sunk);font-size:11.5px;padding:8px}
+.qitems td{padding:6px;border-bottom:1px solid var(--line);vertical-align:top}
+.qitems tr:last-child td{border-bottom:0}
+.qitems tbody tr{cursor:default}
+.qitems tbody tr:hover{background:transparent}
+.qitems input,.qitems select,.qitems textarea{width:100%;padding:7px 8px;border:1px solid var(--line);border-radius:4px;background:var(--bg);font-size:14px}
+.qitems textarea{resize:none;overflow:hidden;min-height:36px;line-height:1.4}
+.qitems td:nth-child(1){width:46%}.qitems td:nth-child(2){width:9%}.qitems td:nth-child(3){width:14%}.qitems td:nth-child(4){width:14%}
+.qitems td[data-amt]{padding-top:13px;font-weight:600;color:var(--ink)}
+.qitems .x{padding:6px 8px}
+.qitems .x:disabled{opacity:.3;cursor:default}
+.qitems input:focus,.qitems select:focus,.qitems textarea:focus{outline:none;border-color:var(--accent)}
+.qfoot{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-top:10px;flex-wrap:wrap}
+.qtot{display:grid;grid-template-columns:auto auto;gap:4px 24px;margin:0;min-width:220px}
+.qtot dt{color:var(--muted);text-align:right}
+.qtot dd{margin:0;text-align:right;font-weight:600;color:var(--ink)}
+.qtot .total{border-top:2px solid var(--accent);padding-top:6px;font-size:17px;color:var(--ink)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.details{grid-template-columns:200px 1fr}
+.details dd{text-align:left;font-weight:500;white-space:pre-line}
+@media (max-width:720px){
+  .maillist a{grid-template-columns:minmax(0,1fr) auto;gap:2px 10px}
+  .maillist .what{grid-column:1/-1;white-space:normal}
+  .maillist .snip{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .details{grid-template-columns:1fr}
+  .details dd{margin-bottom:8px}
+}
+.attn .tag.ok{background:var(--good)}
+.attn .dl{display:flex;gap:12px;padding:12px 14px}
+.attn .dl > span:nth-child(2){display:flex;flex-direction:column;gap:2px;min-width:0}
+.docs li{padding:0}
+.docrow{display:flex;align-items:center;gap:12px;padding:10px 14px;cursor:default}
+.docrow input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);flex:none}
+.docrow .nofile{width:18px;flex:none}
+.docrow .dname{display:flex;flex-direction:column;min-width:0;flex:1}
+.docrow .dname b{color:var(--ink);font-weight:600}
+.packbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.fstate{font-size:14px}
+.f input[type=file]{padding:8px;background:var(--surface)}
+.sigprev,.sigcard{background:#ffffff;color:#222222;border:1px solid var(--line);border-radius:6px;padding:4px 16px 14px;overflow-x:auto}
+.sigcard{margin-top:6px}
+.sigpanel{margin-top:28px}
+.reply-sig{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.sigbox summary{cursor:pointer;color:var(--accent-ink);font-weight:600;font-size:13.5px}
+.sigbox .sigprev{margin-top:8px}
+.sigline{padding-top:0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* company switch */
+.coswitch{display:grid;grid-template-columns:1fr 1fr;gap:3px;background:var(--rail-2);border-radius:6px;padding:3px;margin-top:-6px}
+.coswitch button{background:none;border:0;border-radius:4px;padding:7px 6px;color:var(--rail-muted);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.coswitch button:hover{color:var(--rail-ink)}
+.coswitch button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+:root[data-company="llp"]{--rail:#0E3D24;--rail-2:#185332;--rail-ink:#EAF5EC;--rail-muted:#9ED6B0;--rail-line:#1B5A35;--accent:#E2622A;--accent-hover:#C9531F;--accent-ink:#C24E17;--accent-soft:#FCEBE1;--on-accent:#FFFFFF;--hero-a:#FFFFFF;--hero-b:#E3F2E7;--hero-ink:#0E3D24;--hero-muted:#3F5A47}
+@media (prefers-color-scheme:dark){:root[data-company="llp"]:not([data-theme="light"]){--rail:#082A18;--rail-2:#123A25;--rail-line:#1A4A30;--accent-ink:#FF8A4C;--accent-soft:#3A2418;--hero-a:#0F2A1C;--hero-b:#14402A;--hero-ink:#F2F8F3;--hero-muted:#B9D6C2}}
+:root[data-company="llp"][data-theme="dark"]{--rail:#082A18;--rail-2:#123A25;--rail-line:#1A4A30;--accent-ink:#FF8A4C;--accent-soft:#3A2418;--hero-a:#0F2A1C;--hero-b:#14402A;--hero-ink:#F2F8F3;--hero-muted:#B9D6C2}
+:root[data-company="llp"] .hero{background:linear-gradient(160deg,var(--hero-a) 0%,var(--hero-b) 100%);border-color:var(--line)}
+:root[data-company="llp"] .hero h1{color:var(--hero-muted)}
+:root[data-company="llp"] .hero .headline{color:var(--hero-ink)}
+:root[data-company="llp"] .hero .btn{color:var(--hero-ink);border-color:var(--hero-ink);background:transparent}
+:root[data-company="llp"] .hero .btn:hover{background:rgba(127,212,156,.18)}
+:root[data-company="llp"] .hero .btn.primary{background:var(--accent);border-color:var(--accent);color:#FFFFFF}
+:root[data-company="llp"] .dhead{background:linear-gradient(135deg,#0E3D24 0%,#1B6B3D 100%)}
+:root[data-company="llp"] #toast{background:#0E3D24}
+#m365gate{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:var(--bg,#f4f4f4);padding:16px}
+#m365gate .m365card{max-width:420px;width:100%;background:var(--panel,#fff);border:1px solid var(--line,#ddd);border-radius:10px;padding:28px;text-align:center}
+#m365gate h1{font-size:1.4rem;margin:0 0 8px}#m365gate p{margin:0 0 20px;color:var(--muted,#666)}
+#m365who{margin:12px 0 0;word-break:break-all}
+html.m365 .reply-sig,html.m365 .sigline,html.m365 .sigprev{display:none}
+</style>
+</head>
+<body>
+<div class="mbar">
+  <a class="brand" href="#/dashboard" aria-label="Ryno-Tec Business Hub home"><svg viewBox="50 -10 320 320" aria-hidden="true"><path d="M80 300 V80 H200 L240 120 V190 L200 230 H80" fill="none" stroke="currentColor" stroke-width="40" stroke-linejoin="miter"/><path d="M155 230 L340 280" fill="none" stroke="currentColor" stroke-width="40"/><path d="M146 12 H96 V60 H146" fill="none" stroke="currentColor" stroke-width="28" stroke-linejoin="miter"/><path d="M254.1 226.4 L341.1 249.2" fill="none" stroke="#ff6b35" stroke-width="34"/><polygon points="313.6,245.9 351.2,136.4 347.6,134.6 281.6,229.7" fill="#ff6b35"/></svg><span><b>Ryno-Tec</b><small id="mtitle">Business Hub</small></span></a>
+  <button class="btn small" id="menuBtn" aria-controls="rail" aria-expanded="false">Menu</button>
+</div>
+<div class="scrim" id="scrim"></div>
+<div class="app">
+  <aside class="rail" id="rail" aria-label="Main navigation">
+    <a class="brand" href="#/dashboard" aria-label="Ryno-Tec Business Hub home"><svg viewBox="50 -10 320 320" aria-hidden="true"><path d="M80 300 V80 H200 L240 120 V190 L200 230 H80" fill="none" stroke="currentColor" stroke-width="40" stroke-linejoin="miter"/><path d="M155 230 L340 280" fill="none" stroke="currentColor" stroke-width="40"/><path d="M146 12 H96 V60 H146" fill="none" stroke="currentColor" stroke-width="28" stroke-linejoin="miter"/><path d="M254.1 226.4 L341.1 249.2" fill="none" stroke="#ff6b35" stroke-width="34"/><polygon points="313.6,245.9 351.2,136.4 347.6,134.6 281.6,229.7" fill="#ff6b35"/></svg><span><b>Ryno-Tec</b><small>Business Hub</small></span></a>
+    <div class="coswitch" role="group" aria-label="Company"><button type="button" data-co="rtc" aria-pressed="true">Ryno-Tec</button><button type="button" data-co="llp" aria-pressed="false">Lesego Laka</button></div>
+    <nav id="nav" aria-label="Sections"></nav>
+    <div class="links">
+      <a class="site" id="siteLink" href="https://www.ryno-tec.co.za" target="_blank" rel="noopener">Website ↗</a>
+      <a class="site" href="https://kagiso933.github.io/etender-pro/" target="_blank" rel="noopener">eTender Pro ↗</a>
+    </div>
+    <div class="sync" id="sync"><i></i><span>Connecting…</span></div>
+  </aside>
+  <main id="main" tabindex="-1"></main>
+</div>
+<dialog id="dlg"><form id="dlgForm" novalidate></form></dialog>
+<dialog id="viewer" aria-labelledby="viewerTitle"><div class="vwrap"><div class="dhead"><h2 id="viewerTitle">Document</h2><button type="button" class="x" data-viewclose aria-label="Close">&times;</button></div><div class="vbody" id="viewerBody"></div><div class="dfoot"><span class="meta" id="viewerMeta"></span><span class="spacer"></span><button type="button" class="btn" data-viewclose>Close</button><button type="button" class="btn primary" id="viewerSave">Save a copy</button></div></div></dialog>
+<dialog id="qdlg" class="wide"><form id="qForm" novalidate></form></dialog>
+<dialog id="mdlg"><form id="mForm" novalidate></form></dialog>
+<dialog id="sdlg"><form id="sForm" novalidate></form></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="vendor/msal-browser-3.28.1.min.js"></script>
+<script src="hub-config.js"></script>
+<script src="m365.js"></script>
+<script>
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ZAR = new Intl.NumberFormat('en-ZA',{style:'currency',currency:'ZAR',maximumFractionDigits:0});
+const money = v => (v === '' || v == null || isNaN(+v)) ? '—' : ZAR.format(+v);
+const today = () => { const d = new Date(); return new Date(d - d.getTimezoneOffset()*6e4).toISOString().slice(0,10); };
+const thisMonth = () => today().slice(0,7);
+const addDays = (s,n) => { const d = new Date(s+'T00:00'); d.setDate(d.getDate()+n); return new Date(d - d.getTimezoneOffset()*6e4).toISOString().slice(0,10); };
+const fmtDate = s => s ? new Date(s+'T00:00').toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'}) : '—';
+const fmtMonth = s => s ? new Date(s+'-01T00:00').toLocaleDateString('en-ZA',{month:'long',year:'numeric'}) : '—';
+const daysUntil = s => Math.round((new Date(s+'T00:00') - new Date(today()+'T00:00'))/864e5);
+const sum = (arr, f) => arr.reduce((a,x) => a + (+f(x) || 0), 0);
+const plural = (n, w, p) => `${n} ${n === 1 ? w : (p || w + 's')}`;
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)+Math.random().toString(36).slice(2)).replace(/-/g,'');
+
+/* ---------- companies ---------- */
+const COMPANIES = {
+  rtc: {id:'rtc', short:'Ryno-Tec', site:'https://www.ryno-tec.co.za', tn:'IT tender', unit:'hours', prefix:'', defView:'online',
+    dark:[26,26,26], accent:[255,107,53], darkHex:'#1a1a1a', accentHex:'#ff6b35', inkHex:'#c4471a',
+    blurb:'IT tenders with an online briefing',
+    about:'a South African IT consulting firm (platform engineering, Azure modern workplace, cloud infrastructure, identity and security, AI infrastructure)',
+    services:['Platform engineering','Modern workplace','Cloud infrastructure','Identity & security','AI infrastructure','EV charging','Managed services','Other'],
+    mark:'<svg viewBox="50 -10 320 320" aria-hidden="true"><path d="M80 300 V80 H200 L240 120 V190 L200 230 H80" fill="none" stroke="currentColor" stroke-width="40" stroke-linejoin="miter"/><path d="M155 230 L340 280" fill="none" stroke="currentColor" stroke-width="40"/><path d="M146 12 H96 V60 H146" fill="none" stroke="currentColor" stroke-width="28" stroke-linejoin="miter"/><path d="M254.1 226.4 L341.1 249.2" fill="none" stroke="#ff6b35" stroke-width="34"/><polygon points="313.6,245.9 351.2,136.4 347.6,134.6 281.6,229.7" fill="#ff6b35"/></svg>', logo:null},
+  llp: {id:'llp', short:'Lesego Laka', site:'https://www.lesegolakaprojects.com', tn:'tender', unit:'each', prefix:'LL-', defView:'open',
+    dark:[14,61,36], accent:[226,98,42], darkHex:'#0E3D24', accentHex:'#E2622A', inkHex:'#C24E17',
+    blurb:'Maintenance, grounds, agriculture and supply tenders',
+    about:'a South African facilities and agricultural services company (building maintenance such as painting and paving, grounds and landscaping, livestock and crop farming, and supply of non-IT goods such as PPE and cleaning materials), mainly bidding for public-sector work in Gauteng',
+    services:['Facilities maintenance','Grounds & landscaping','Agriculture','Supply & procurement','Other'],
+    mark:'<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 8h13v35h35v13H8z" fill="#7FD49C"/><path d="M56 56H43V21H8V8h48z" fill="#E2622A"/><path d="M32 40V28m0 0c-4 0-6-2.6-6-6.4 4 0 6 2.6 6 6.4zm0 4c3.6 0 5.6-2.2 5.6-5.6-3.6 0-5.6 2.2-5.6 5.6z" fill="none" stroke="#7FD49C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>', logo:'<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="-4 -4 72 72"><path d="M8 8h13v35h35v13H8z" fill="#7FD49C"/><path d="M56 56H43V21H8V8h48z" fill="#E2622A"/><path d="M32 40V28m0 0c-4 0-6-2.6-6-6.4 4 0 6 2.6 6 6.4zm0 4c3.6 0 5.6-2.2 5.6-5.6-3.6 0-5.6 2.2-5.6 5.6z" fill="none" stroke="#7FD49C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'}
+};
+let CO = (() => { try { const v = localStorage.getItem('hub-company'); return COMPANIES[v] ? v : 'rtc'; } catch(e){ return 'rtc'; } })();
+const C = () => COMPANIES[CO];
+const coOf = r => (r && r.company) || 'rtc';
+const tn = () => C().tn;
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+/* ---------- schema ---------- */
+const STAGES = ['Lead','Qualified','Proposal','Negotiation','Won','Lost'];
+const STAGE_P = {Lead:10,Qualified:25,Proposal:50,Negotiation:75,Won:100,Lost:0};
+const TONE = {
+  good:['Active','Won','Paid','Signed','Done','Verified','Agreed','Complete','Built','Awarded','Valid','Online','Online and in person','Accepted'],
+  warn:['Proposal','Negotiation','With lawyer','With counterparty','Ready to sign','In progress','In review','On hold','Trial','Sent','Planning','Reviewing','Bidding','Submitted','Expiring'],
+  bad:['Lost','Overdue','Expired','Terminated','Cancelled','Rejected','Blocked','Declined']
+};
+const tone = v => TONE.good.includes(v) ? 'good' : TONE.warn.includes(v) ? 'warn' : TONE.bad.includes(v) ? 'bad' : '';
+
+/* tender matching */
+const IT_RE = /\b(ict|i\.c\.t|information technology|information and communication|it services?|it support|it equipment|it infrastructure|software|hardware|computer|laptops?|desktops?|servers?|storage area|cloud|data ?cent(?:re|er)s?|cyber|firewall|microsoft|licen[cs](?:e|es|ing)|end[- ]user computing|help ?desk|service desk|erp|sap|oracle|azure|aws|lan|wan|wi-?fi|network (?:infrastructure|equipment|switch|security|cabling)|telephony|voip|website|web ?development|web ?portal|database|backup|disaster recovery|systems? integration|digital transformation|it managed services|managed it|printing solution|active directory|intune|m365|office 365)\b/i;
+const LLP_RE = /\b(maintenance|repairs?|refurbish\w*|renovat\w*|painting|paint|paving|pavers?|kerb\w*|plumbing|roof\w*|gutters?|fenc\w*|building works?|minor works|civil works|cleaning services?|cleaning materials?|cleaning chemicals?|hygiene|landscap\w*|grass cutting|grass|lawns?|garden\w*|horticultur\w*|tree felling|tree pruning|bush clearing|alien (?:vegetation|invasive\w*)|vegetation|weed\w*|agricultur\w*|farm\w*|livestock|cattle|goats?|sheep|pigs?|poultry|broilers?|fodder|animal feed|seedlings?|seeds|fertili[sz]er\w*|fresh produce|vegetables?|food parcels?|ppe|protective clothing|workwear|uniforms?|overalls|consumables|stationery|lease of (?:land|farm\w*)|land lease)\b/i;
+const tenderRe = () => CO === 'llp' ? LLP_RE : IT_RE;
+const ONLINE_RE = /(ms |microsoft )?teams\b|zoom|virtual|online|webinar|google meet|meet\.google|webex|link will be|via (?:a )?link|https?:\/\//i;
+const CORE_DOCS = ['CIPC registration','Tax compliance status (TCS PIN)','CSD registration','B-BBEE affidavit or certificate'];
+const COMPLIANCE_DOCS = [...CORE_DOCS,'SARS registration notice','Memorandum of Incorporation (MOI)','CIPC notice of incorporation','COIDA letter of good standing','Professional indemnity insurance','Bank confirmation letter','Municipal rates clearance','Company profile','Director ID copies','Other'];
+const nowLocal = () => { const d = new Date(); return new Date(d - d.getTimezoneOffset()*6e4).toISOString().slice(0,16); };
+const fmtDT = s => s ? new Date(s).toLocaleString('en-ZA',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+const isOpenTender = t => !['Submitted','Awarded','Lost','Not bidding'].includes(t.status) && (!t.closing || t.closing >= nowLocal());
+const isOnline = t => /Online/.test(t.briefing || '');
+const ARCHIVE_CATS = ['CIPC','SARS','CSD','B-BBEE','Banking','Microsoft','Domain & hosting','Tenders','Clients & suppliers','Other'];
+function archFiles(m){
+  const fs = [...(m.attachments || []), ...(fileOf(m) ? [fileOf(m)] : [])];
+  if (!fs.length) return '<span class="muted">—</span>';
+  return viewBtn(fs[0], fs.length > 1 ? `Open (${fs.length})` : 'Open', 'link');
+}
+function guessCat(from, subj){
+  const f = String(from || '').toLowerCase(), s = String(subj || '').toLowerCase();
+  if (/b-?bbee/.test(s)) return 'B-BBEE';
+  if (/cipc\./.test(f)) return 'CIPC';
+  if (/sars\./.test(f)) return 'SARS';
+  if (/csd\./.test(f)) return 'CSD';
+  if (/nedbank|fnb\.|absa\.|standardbank|capitecbank|simplybiz/.test(f)) return 'Banking';
+  if (/microsoft/.test(f)) return 'Microsoft';
+  if (/afrihost|registry\.net\.za|aserv/.test(f)) return 'Domain & hosting';
+  if (/etender|treasury/.test(f)) return 'Tenders';
+  return 'Other';
+}
+function docStatus(c){
+  if (!c.expires) return 'No expiry';
+  const d = daysUntil(c.expires);
+  return d < 0 ? 'Expired' : d <= 30 ? 'Expiring' : 'Valid';
+}
+function briefCell(t){
+  const b = t.briefing || 'Not stated';
+  const when = t.briefingAt ? `<br><span class="muted">${esc(fmtDT(t.briefingAt))}${t.compulsory ? ', compulsory' : ''}</span>` : (t.compulsory ? '<br><span class="muted">Compulsory</span>' : '');
+  return `<span>${['Online','Online and in person'].includes(b) ? badge(b) : esc(b)}${when}</span>`;
+}
+
+const SCHEMA = {
+  tenders:{label:'Tenders',one:'tender',title:t=>t.title,sort:(a,b)=>(a.closing||'9').localeCompare(b.closing||'9'),status:'status',
+    get desc(){ return `${cap(tn())}s from your tender system, with briefing details and where each bid stands.`; },
+    get emptyText(){ return `No ${tn()}s for ${C().short} yet. They arrive with the next morning sync from eTender Pro. To get them now, export from eTender Pro and import the file here.`; },
+    fields:[
+      {k:'title',l:'Tender',t:'text',req:1,wide:1},
+      {k:'tenderNo',l:'Tender number',t:'text'},
+      {k:'buyer',l:'Department or entity',t:'text'},
+      {k:'province',l:'Province',t:'text'},
+      {k:'category',l:'Category',t:'text'},
+      {k:'value',l:'Estimated value',t:'money'},
+      {k:'closing',l:'Closes',t:'datetime-local'},
+      {k:'briefing',l:'Briefing',t:'select',opt:['Online','Online and in person','In person','No briefing','Not stated'],def:'Not stated'},
+      {k:'briefingAt',l:'Briefing date and time',t:'datetime-local'},
+      {k:'compulsory',l:'Briefing is compulsory',t:'bool'},
+      {k:'briefingVenue',l:'Briefing venue or instructions',t:'text',wide:1},
+      {k:'briefingLink',l:'Briefing join link',t:'url'},
+      {k:'status',l:'Bid status',t:'select',opt:['New','Reviewing','Bidding','Submitted','Awarded','Lost','Not bidding'],def:'New',badge:1},
+      {k:'sourceUrl',l:'eTenders link',t:'url'},
+      {k:'docsUrl',l:'Bid documents link',t:'url'},
+      {k:'ocid',l:'eTenders reference (OCID)',t:'text'},
+      {k:'notes',l:'Notes and bid requirements',t:'textarea',wide:1}],
+    cols:['title','buyer',{k:'brief',l:'Briefing',v:t=>briefCell(t)},'closing','status']},
+  compliance:{label:'Compliance pack',one:'document',title:c=>c.doc,sort:(a,b)=>(a.expires||'9').localeCompare(b.expires||'9'),status:'st',statusOf:c=>docStatus(c),
+    chipOpts:['Valid','Expiring','Expired','No expiry'],
+    desc:'The documents tenders ask for. Keep them current so you can bid at short notice.',
+    fields:[
+      {k:'doc',l:'Document',t:'select',opt:COMPLIANCE_DOCS,req:1},
+      {k:'reference',l:'Reference or number',t:'text',hint:'e.g. CSD supplier number, TCS PIN'},
+      {k:'issued',l:'Issued',t:'date'},{k:'expires',l:'Expires',t:'date'},
+      {k:'file',l:'File',t:'asset'},
+      {k:'link',l:'Document link',t:'url',hint:'Or where the certified copy lives online'},
+      {k:'notes',l:'Notes',t:'textarea',wide:1}],
+    cols:['doc','reference','expires',{k:'f',l:'File',v:c=>fileOf(c)?viewBtn(fileOf(c),'Open','link'):'<span class="muted">—</span>'},{k:'st',l:'Status',v:c=>badge(docStatus(c))}]},
+  clients:{label:'Clients',one:'client',title:c=>c.name,sort:(a,b)=>(a.name||'').localeCompare(b.name||''),status:'status',
+    desc:'Companies and departments you sell to or are talking to.',
+    fields:[
+      {k:'name',l:'Company or department',t:'text',req:1,wide:1},
+      {k:'industry',l:'Sector',t:'select',opt:['Public sector','Financial services','Retail','Telecoms','Mining & energy','Healthcare','Education','Startup','Other']},
+      {k:'status',l:'Status',t:'select',opt:['Prospect','Active','Dormant'],def:'Prospect',badge:1},
+      {k:'contact',l:'Contact person',t:'text'},{k:'email',l:'Contact email',t:'email'},
+      {k:'phone',l:'Contact phone',t:'tel'},
+      {k:'notes',l:'Notes',t:'textarea',wide:1}],
+    cols:['name','industry','contact','status']},
+  deals:{label:'Pipeline',one:'deal',title:d=>d.title,sort:(a,b)=>(a.close||'9').localeCompare(b.close||'9'),status:'stage',
+    desc:'Opportunities from first conversation or tender to signed work.',
+    fields:[
+      {k:'title',l:'Deal name',t:'text',req:1,wide:1},
+      {k:'client',l:'Client',t:'ref',ref:'clients',req:1},
+      {k:'tender',l:'From tender',t:'ref',ref:'tenders'},
+      {k:'service',l:'Service',t:'select',get opt(){ return C().services; }},
+      {k:'value',l:'Value (excl. VAT)',t:'money'},
+      {k:'stage',l:'Stage',t:'select',opt:STAGES,def:'Lead',badge:1},
+      {k:'probability',l:'Win chance %',t:'number',hint:'Leave blank to use the stage default'},
+      {k:'close',l:'Expected close',t:'date'},
+      {k:'notes',l:'Notes',t:'textarea',wide:1}],
+    cols:['title','client','stage','value','close']},
+  projects:{label:'Projects',one:'project',title:p=>p.name,sort:(a,b)=>(a.start||'').localeCompare(b.start||'')*-1,status:'status',
+    desc:'Delivery work, with its plan, requirements, time and billing in one place.',
+    fields:[
+      {k:'name',l:'Project name',t:'text',req:1,wide:1},
+      {k:'client',l:'Client',t:'ref',ref:'clients',req:1},
+      {k:'deal',l:'From deal',t:'ref',ref:'deals'},
+      {k:'billing',l:'Billing',t:'select',opt:['Time & materials','Fixed price','Retainer'],def:'Time & materials'},
+      {k:'rate',l:'Hourly rate (excl. VAT)',t:'money'},
+      {k:'budget',l:'Budget (excl. VAT)',t:'money'},
+      {k:'status',l:'Status',t:'select',opt:['Planning','Active','On hold','Complete','Cancelled'],def:'Planning',badge:1},
+      {k:'start',l:'Start',t:'date'},{k:'end',l:'Target end',t:'date'},
+      {k:'scope',l:'Scope summary',t:'textarea',wide:1}],
+    cols:['name','client','start','end','status']},
+  tasks:{label:'Tasks',one:'task',title:t=>t.title,sort:(a,b)=>(a.due||'9').localeCompare(b.due||'9'),status:'status',
+    desc:'The project plan: what needs doing and when.',
+    fields:[
+      {k:'title',l:'Task',t:'text',req:1,wide:1},
+      {k:'project',l:'Project',t:'ref',ref:'projects',req:1},
+      {k:'phase',l:'Phase or milestone',t:'text',hint:'e.g. Discovery, Build, Handover'},
+      {k:'status',l:'Status',t:'select',opt:['To do','In progress','Blocked','Done'],def:'To do',badge:1},
+      {k:'priority',l:'Priority',t:'select',opt:['High','Medium','Low'],def:'Medium'},
+      {k:'due',l:'Due',t:'date'},
+      {k:'notes',l:'Notes',t:'textarea',wide:1}],
+    cols:['title','project','phase','due','status']},
+  requirements:{label:'Requirements',one:'requirement',title:r=>`${r.ref||''} ${r.title||''}`.trim(),sort:(a,b)=>(a.ref||'').localeCompare(b.ref||'',undefined,{numeric:true}),status:'status',
+    desc:'What each client needs, agreed in writing before you build.',
+    fields:[
+      {k:'title',l:'Requirement',t:'text',req:1,wide:1},
+      {k:'project',l:'Project',t:'ref',ref:'projects',req:1},
+      {k:'ref',l:'ID',t:'text',hint:'Leave blank to number it automatically'},
+      {k:'type',l:'Type',t:'select',opt:['Functional','Non-functional','Integration','Security & compliance','Constraint'],def:'Functional'},
+      {k:'priority',l:'Priority',t:'select',opt:['Must have','Should have','Could have',"Won't have"],def:'Must have'},
+      {k:'status',l:'Status',t:'select',opt:['Draft','In review','Agreed','Built','Verified','Rejected'],def:'Draft',badge:1},
+      {k:'source',l:'Requested by',t:'text'},
+      {k:'detail',l:'Description and acceptance criteria',t:'textarea',wide:1}],
+    cols:['ref','title','project','priority','status']},
+  timesheets:{label:'Timesheets',one:'time entry',title:t=>`${fmtDate(t.date)}, ${t.hours||0}h`,sort:(a,b)=>(b.date||'').localeCompare(a.date||''),
+    desc:'Hours worked, so nothing billable gets missed.',
+    fields:[
+      {k:'date',l:'Date',t:'date',req:1,def:()=>today()},
+      {k:'project',l:'Project',t:'ref',ref:'projects',req:1},
+      {k:'hours',l:'Hours',t:'number',req:1,step:.25},
+      {k:'billable',l:'Billable',t:'bool',def:true},
+      {k:'invoiced',l:'Already invoiced',t:'bool',def:false},
+      {k:'desc',l:'What was done',t:'textarea',wide:1}],
+    cols:['date','project','hours',{k:'value',l:'Value',num:1,v:t=>t.billable?money(t.hours*rate(t.project)):'Not billable'},'invoiced']},
+  invoices:{label:'Invoices',one:'invoice',title:i=>i.number,sort:(a,b)=>(b.issued||'').localeCompare(a.issued||''),status:'status',statusOf:i=>invStatus(i),
+    desc:'What you have billed and what is still owed. Your accounting package stays the official record.',
+    fields:[
+      {k:'number',l:'Invoice number',t:'text',req:1,def:()=>nextInvoiceNo()},
+      {k:'client',l:'Client',t:'ref',ref:'clients',req:1},
+      {k:'project',l:'Project',t:'ref',ref:'projects'},
+      {k:'amount',l:'Amount (excl. VAT)',t:'money',req:1},
+      {k:'vat',l:'Add VAT at 15%',t:'bool',def:false},
+      {k:'status',l:'Status',t:'select',opt:['Draft','Sent','Paid','Cancelled'],def:'Draft'},
+      {k:'issued',l:'Issued',t:'date',def:()=>today()},
+      {k:'due',l:'Due',t:'date',def:()=>addDays(today(),30)},
+      {k:'paidOn',l:'Paid on',t:'date'},
+      {k:'notes',l:'Notes',t:'textarea',wide:1}],
+    cols:['number','client',{k:'total',l:'Total',num:1,v:i=>money(invTotal(i))},'due',{k:'st',l:'Status',v:i=>badge(invStatus(i))}]},
+  contracts:{label:'Contracts',one:'contract',title:c=>c.title,sort:(a,b)=>(a.end||'9').localeCompare(b.end||'9'),status:'status',
+    desc:'Every agreement, where it is in legal review, and when it expires.',
+    fields:[
+      {k:'title',l:'Contract',t:'text',req:1,wide:1},
+      {k:'type',l:'Type',t:'select',opt:['MSA','SOW','NDA','Subcontractor agreement','Supplier agreement','Joint venture or consortium','Service level agreement','Other'],def:'MSA'},
+      {k:'party',l:'Other party',t:'text',req:1},
+      {k:'project',l:'Project',t:'ref',ref:'projects'},
+      {k:'value',l:'Value (excl. VAT)',t:'money'},
+      {k:'status',l:'Status',t:'select',opt:['Drafting','With lawyer','With counterparty','Ready to sign','Signed','Expired','Terminated'],def:'Drafting',badge:1},
+      {k:'lawyer',l:'Lawyer or firm',t:'text'},
+      {k:'start',l:'Effective from',t:'date'},{k:'end',l:'Expires',t:'date'},
+      {k:'renewal',l:'Renewal',t:'select',opt:['Fixed term','Auto-renews','No end date'],def:'Fixed term'},
+      {k:'doc',l:'Document link',t:'url',hint:'SharePoint, Google Drive or similar'},
+      {k:'notes',l:'Open points and lawyer comments',t:'textarea',wide:1}],
+    cols:['title','type','party','end','status']},
+  subscriptions:{label:'Subscriptions',one:'subscription',title:s=>s.service,sort:(a,b)=>(+b.cost||0)-(+a.cost||0),status:'status',
+    desc:'Recurring costs of running the business.',
+    fields:[
+      {k:'service',l:'Service',t:'text',req:1},
+      {k:'category',l:'Category',t:'select',opt:['Cloud','Domain & DNS','Email & productivity','Software & tools','Tender services','Accounting','Insurance','Banking','Other']},
+      {k:'cost',l:'Monthly cost (ZAR)',t:'money',req:1},
+      {k:'billingDay',l:'Billed on day',t:'number'},
+      {k:'account',l:'Paid from',t:'text',hint:'e.g. Business account, card ending 1234'},
+      {k:'renews',l:'Renews or trial ends',t:'date',hint:'For a trial, the day it converts to paid'},
+      {k:'status',l:'Status',t:'select',opt:['Active','Trial','Cancelled'],def:'Active',badge:1},
+      {k:'admin',l:'Admin portal',t:'url'},
+      {k:'notes',l:'Notes',t:'textarea'}],
+    cols:['service','category','cost','status']},
+  quotes:{label:'Quotes',one:'quote',title:q=>`${q.number||''} ${q.title||''}`.trim(),sort:(a,b)=>(b.number||'').localeCompare(a.number||'',undefined,{numeric:true}),status:'status',statusOf:q=>quoteStatus(q),
+    chipOpts:['Draft','Sent','Accepted','Declined','Expired'],
+    desc:'Quotations you send clients. Email them as a branded PDF straight from Gmail.',
+    fields:[
+      {k:'number',l:'Quote',t:'text'},
+      {k:'client',l:'Client',t:'ref',ref:'clients'},
+      {k:'title',l:'Quote for',t:'text'},
+      {k:'email',l:'Send to',t:'email'},
+      {k:'validUntil',l:'Valid until',t:'date'},
+      {k:'status',l:'Status',t:'select',opt:['Draft','Sent','Accepted','Declined'],badge:1}],
+    cols:['number','client','title',{k:'total',l:'Total',num:1,v:q=>money(quoteTotals(q).total)},'validUntil',{k:'st',l:'Status',v:q=>badge(quoteStatus(q))}]},
+  archive:{label:'Mail archive',one:'archived email',title:m=>m.subject,sort:(a,b)=>(b.received||'').localeCompare(a.received||''),status:'category',
+    chipOpts:ARCHIVE_CATS,
+    desc:'Important emails kept with their attachments: registrations, tax, banking, CSD, Microsoft and suppliers. Search covers the email text.',
+    emptyText:'No archived emails yet. Open an email in Mail and choose Archive to hub.',
+    fields:[
+      {k:'subject',l:'Subject',t:'text',req:1,wide:1},
+      {k:'from',l:'From',t:'text'},
+      {k:'received',l:'Received',t:'datetime-local'},
+      {k:'category',l:'Category',t:'select',opt:ARCHIVE_CATS,def:'Other'},
+      {k:'reference',l:'Reference',t:'text',hint:'e.g. tracking number, invoice number, supplier number'},
+      {k:'file',l:'Extra file',t:'asset'},
+      {k:'gmailUrl',l:'Email link',t:'url'},
+      {k:'body',l:'Email text',t:'textarea',wide:1},
+      {k:'notes',l:'Notes',t:'textarea',wide:1}],
+    cols:['received','subject','category','reference',{k:'att',l:'Files',v:m=>archFiles(m)}]}
+};
+
+const NAV = [
+  ['Overview',[['dashboard','Dashboard'],['mail','Mail'],['archive','Mail archive']]],
+  ['Win work',[['tenders','Tenders'],['public','Public sector'],['clients','Clients'],['deals','Pipeline']]],
+  ['Deliver',[['projects','Projects'],['tasks','Tasks'],['requirements','Requirements'],['timesheets','Timesheets']]],
+  ['Money',[['quotes','Quotes'],['invoices','Invoices'],['subscriptions','Subscriptions']]],
+  ['Legal',[['contracts','Contracts'],['compliance','Compliance pack']]],
+  ['Setup',[['settings','Business details']]]
+];
+
+/* ---------- data ---------- */
+const D = {}, RAW = {}; Object.keys(SCHEMA).forEach(k => { D[k] = []; RAW[k] = []; });
+function refreshView(k){ (k ? [k] : Object.keys(SCHEMA)).forEach(x => D[x] = RAW[x].filter(r => coOf(r) === CO)); }
+let DB = null, MODE = 'pending', SYNC = null;
+const LSKEY = 'rynotec-hub-data-v1';
+function lsGet(k){ try { return localStorage.getItem(k) || ''; } catch(e){ return ''; } }
+function lsSet(k,v){ try { localStorage.setItem(k,v); } catch(e){} }
+function loadLocal(){
+  try { const raw = localStorage.getItem(LSKEY); if (raw){ const o = JSON.parse(raw); Object.keys(SCHEMA).forEach(k => RAW[k] = Array.isArray(o[k]) ? o[k] : []); } } catch(e){}
+  refreshView();
+}
+function saveLocal(){ lsSet(LSKEY, JSON.stringify(RAW)); }
+
+const get = (k,id) => D[k].find(x => x.id === id);
+const refName = (k,id) => { const x = id && get(k,id); return x ? SCHEMA[k].title(x) : '—'; };
+const rate = pid => +(get('projects',pid)?.rate) || 0;
+const invTotal = i => (+i.amount || 0) * (i.vat ? 1.15 : 1);
+const invStatus = i => (i.status === 'Sent' && i.due && i.due < today()) ? 'Overdue' : (i.status || 'Draft');
+const dealP = d => (d.probability === '' || d.probability == null) ? STAGE_P[d.stage] ?? 0 : +d.probability;
+const statusOf = (k,x) => SCHEMA[k].statusOf ? SCHEMA[k].statusOf(x) : x[SCHEMA[k].status];
+function nextInvoiceNo(){
+  const y = today().slice(0,4), pre = `${C().prefix}INV-${y}-`;
+  const n = D.invoices.map(i => i.number || '').filter(s => s.startsWith(pre)).map(s => +s.slice(pre.length) || 0);
+  return pre + String((n.length ? Math.max(...n) : 0) + 1).padStart(3,'0');
+}
+
+async function saveItem(k, id, body){
+  body.updatedAt = new Date().toISOString();
+  if (!id) body.createdAt = body.updatedAt;
+  const prev = id ? RAW[k].find(x => x.id === id) : null;
+  body.company = body.company || (prev && prev.company) || CO;
+  if (MODE === 'db'){
+    const ref = id ? DB.collection(k).doc(id) : DB.collection(k).doc();
+    if (id){ const old = get(k,id); if (old?.createdAt) body.createdAt = old.createdAt; }
+    await ref.set(body);
+    return ref.id;
+  }
+  if (id){ const i = RAW[k].findIndex(x => x.id === id); RAW[k][i] = {...RAW[k][i], ...body, id}; }
+  else { id = uid(); RAW[k].push({...body, id}); }
+  refreshView(k); saveLocal(); render(); return id;
+}
+async function deleteItem(k,id){
+  if (MODE === 'db'){ await DB.collection(k).doc(id).delete(); return; }
+  RAW[k] = RAW[k].filter(x => x.id !== id); refreshView(k); saveLocal(); render();
+}
+function writeError(e){
+  const c = e && e.code;
+  if (c === 'invalid_argument') toast("Your access is view-only. Ask the owner to make you an Editor.");
+  else if (c === 'quota_exceeded') toast('Storage is full. Delete old records to make room.');
+  else toast("Couldn't save. Check your connection and try again.");
+}
+
+/* ---------- UI state ---------- */
+const ui = {}; Object.keys(SCHEMA).forEach(k => ui[k] = {q:'',status:''});
+ui.projTab = 'tasks'; ui.tenders.view = 'online';
+function route(){ const h = location.hash.replace(/^#\/?/,'').split('/'); return {page: h[0] || 'dashboard', id: h[1] || null}; }
+function go(p){ location.hash = '#/' + p; }
+
+/* ---------- render: shared ---------- */
+const badge = v => v ? `<span class="badge ${tone(v)}">${esc(v)}</span>` : '<span class="muted">—</span>';
+function resolveCols(k, only){
+  const s = SCHEMA[k];
+  return s.cols.map(c => typeof c === 'string' ? {...s.fields.find(f => f.k === c)} : c)
+    .filter(c => !only || only(c));
+}
+function cell(c, r){
+  if (c.v) return c.v(r);
+  const v = r[c.k];
+  switch (c.t){
+    case 'money': return money(v);
+    case 'date': {
+      if (!v) return '<span class="muted">—</span>';
+      const done = ['Done','Complete','Paid','Cancelled','Terminated','Won','Lost','Expired','Submitted','Awarded','Not bidding'].includes(statusOf(currentKeyFor(c, r), r));
+      const late = (c.k === 'due' || c.k === 'end') && v < today() && !done;
+      return `<span class="${late ? 'late' : ''}">${fmtDate(v)}</span>`;
+    }
+    case 'month': return esc(fmtMonth(v));
+    case 'datetime-local': {
+      if (!v) return '<span class="muted">—</span>';
+      const late = c.k === 'closing' && v < nowLocal() && isOpenTender({...r, closing: '9'});
+      return `<span class="${late ? 'late' : ''}">${esc(fmtDT(v))}</span>`;
+    }
+    case 'ref': return esc(refName(c.ref, v));
+    case 'bool': return v ? 'Yes' : 'No';
+    case 'number': return v === '' || v == null ? '<span class="muted">—</span>' : esc(v);
+    default: return c.badge ? badge(v) : (v ? esc(v) : '<span class="muted">—</span>');
+  }
+}
+let _ck = null; const currentKeyFor = () => _ck;
+function table(k, rows, only){
+  if (!rows.length) return '';
+  const cols = resolveCols(k, only); _ck = k;
+  const isNum = c => c.num || c.t === 'money' || c.k === 'hours';
+  return `<div class="tablewrap"><table><thead><tr>${cols.map(c => `<th class="${isNum(c)?'num':''}" scope="col">${esc(c.l)}</th>`).join('')}</tr></thead><tbody>${
+    rows.map(r => `<tr data-open="${k}:${r.id}" tabindex="0">${cols.map((c,i) => `<td data-label="${esc(c.l)}" class="${isNum(c)?'num':''} ${i===0?'primary':''}">${cell(c,r)}</td>`).join('')}</tr>`).join('')
+  }</tbody></table></div>`;
+}
+function empty(k, text, prefill){
+  const s = SCHEMA[k];
+  return `<div class="empty"><p>${esc(text || `No ${s.label.toLowerCase()} yet.`)}</p><button class="btn primary" data-add="${k}" ${prefill ? `data-prefill='${esc(JSON.stringify(prefill))}'` : ''}>Add ${esc(s.one)}</button></div>`;
+}
+
+/* ---------- render: list pages ---------- */
+function filtered(k){
+  const s = SCHEMA[k], st = ui[k];
+  let rows = [...D[k]].sort(s.sort);
+  if (k === 'tenders' && st.view !== 'all') rows = rows.filter(t => isOpenTender(t) && (st.view !== 'online' || isOnline(t)));
+  if (st.status) rows = rows.filter(r => statusOf(k,r) === st.status);
+  if (st.q){
+    const q = st.q.toLowerCase();
+    rows = rows.filter(r => s.fields.some(f => {
+      const v = f.t === 'ref' ? refName(f.ref, r[f.k]) : r[f.k];
+      return String(v ?? '').toLowerCase().includes(q);
+    }));
+  }
+  return rows;
+}
+function listBody(k){
+  const rows = filtered(k);
+  if (!D[k].length) return empty(k, SCHEMA[k].emptyText);
+  if (!rows.length) return `<div class="empty"><p>${k === 'tenders' && ui.tenders.view === 'online' && !ui.tenders.q && !ui.tenders.status ? `No open ${tn()}s with an online briefing. Choose All open to see the rest.` : 'Nothing matches. Clear the search or pick another filter.'}</p></div>`;
+  return table(k, rows);
+}
+function renderList(k){
+  const s = SCHEMA[k], st = ui[k];
+  let chips = '';
+  if (s.status){
+    const f = s.fields.find(x => x.k === s.status) || {};
+    const opts = s.chipOpts ? [...s.chipOpts] : [...f.opt]; if (k === 'invoices') opts.splice(2,0,'Overdue');
+    const count = v => D[k].filter(r => statusOf(k,r) === v).length;
+    chips = `<div class="chips" role="group" aria-label="Filter by status"><button class="chip" data-filter="${k}:" aria-pressed="${!st.status}">All<b>${D[k].length}</b></button>${
+      opts.map(o => { const n = count(o); return n || st.status === o ? `<button class="chip" data-filter="${k}:${esc(o)}" aria-pressed="${st.status===o}">${esc(o)}<b>${n}</b></button>` : ''; }).join('')}</div>`;
+  }
+  let extra = '';
+  if (k === 'timesheets'){
+    const m = D.timesheets.filter(t => (t.date||'').startsWith(thisMonth()));
+    extra = `<p class="sub">This month: ${sum(m,t=>t.hours)}h logged, ${sum(m.filter(t=>t.billable),t=>t.hours)}h billable.</p>`;
+  }
+  return `<header class="page-head"><div><h1>${esc(s.label)}</h1><p class="sub">${esc(s.desc)}</p>${extra}</div><button class="btn primary" data-add="${k}">Add ${esc(s.one)}</button></header>
+  ${D[k].length ? `<div class="toolbar"><input type="search" placeholder="Search ${esc(s.label.toLowerCase())}" aria-label="Search ${esc(s.label.toLowerCase())}" data-search="${k}" value="${esc(st.q)}">${chips}</div>` : ''}
+  <div id="listBody">${listBody(k)}</div>`;
+}
+
+/* ---------- render: pipeline ---------- */
+function renderPipeline(){
+  const s = SCHEMA.deals;
+  const open = D.deals.filter(d => !['Won','Lost'].includes(d.stage));
+  const weighted = sum(open, d => (+d.value||0) * dealP(d) / 100);
+  const lanes = STAGES.map(st => {
+    const ds = D.deals.filter(d => (d.stage||'Lead') === st).sort(s.sort);
+    return `<section class="lane" aria-label="${st}"><header><b>${st}</b><span>${ds.length} · ${money(sum(ds,d=>d.value))}</span></header>${
+      ds.map(d => `<button class="card" data-open="deals:${d.id}"><b>${esc(d.title)}</b><small>${esc(refName('clients',d.client))}</small><div class="v">${money(d.value)}</div><small>${d.close ? 'Close ' + fmtDate(d.close) : 'No close date'}</small></button>`).join('')
+    }</section>`;
+  }).join('');
+  return `<header class="page-head"><div><h1>Pipeline</h1><p class="sub">${plural(open.length,'open deal')} worth ${money(sum(open,d=>d.value))}, or ${money(weighted)} weighted by win chance.</p></div><button class="btn primary" data-add="deals">Add deal</button></header>
+  ${D.deals.length ? `<div class="board">${lanes}</div>` : empty('deals','No deals yet. Add the first opportunity you are chasing.')}`;
+}
+
+/* ---------- render: project detail ---------- */
+function renderProject(id){
+  const p = get('projects', id);
+  if (!p) return `<p class="crumb"><a href="#/projects">Projects</a></p><div class="empty"><p>This project was deleted or hasn't loaded yet.</p></div>`;
+  const of = k => D[k].filter(x => x.project === id);
+  const tasks = of('tasks'), reqs = of('requirements'), time = of('timesheets'), invs = of('invoices').filter(i => i.status !== 'Cancelled'), cons = of('contracts');
+  const hrs = sum(time, t => t.hours), billVal = sum(time.filter(t=>t.billable), t => t.hours * (+p.rate||0));
+  const invoiced = sum(invs, i => i.amount);
+  const done = tasks.filter(t => t.status === 'Done').length;
+  const agreed = reqs.filter(r => ['Agreed','Built','Verified'].includes(r.status)).length;
+  const used = p.budget ? Math.round(Math.max(billVal, invoiced) / p.budget * 100) : null;
+  const tabs = [['tasks','Plan',tasks],['requirements','Requirements',reqs],['timesheets','Time',time],['invoices','Invoices',invs],['contracts','Contracts',cons]];
+  const t = tabs.find(x => x[0] === ui.projTab) || tabs[0];
+  const k = t[0], rows = [...t[2]].sort(SCHEMA[k].sort);
+  return `<p class="crumb"><a href="#/projects">Projects</a></p>
+  <header class="page-head"><div><h1>${esc(p.name)}</h1><p class="sub">${esc(refName('clients',p.client))}, ${esc(p.billing||'')}${p.rate ? ' at ' + money(p.rate) + '/h' : ''}. ${badge(p.status)}</p>${p.scope ? `<p class="scope">${esc(p.scope)}</p>` : ''}</div><button class="btn" data-open="projects:${id}" data-edit="1">Edit project</button></header>
+  <div class="strip">
+    <div class="stat"><span>Plan progress</span><strong>${done}/${tasks.length}</strong><em>tasks done</em></div>
+    <div class="stat"><span>Requirements agreed</span><strong>${agreed}/${reqs.length}</strong></div>
+    <div class="stat"><span>Hours logged</span><strong>${hrs}</strong><em>${money(billVal)} billable</em></div>
+    <div class="stat"><span>Invoiced</span><strong>${money(invoiced)}</strong><em>excl. VAT</em></div>
+    <div class="stat"><span>Budget used</span><strong class="${used > 100 ? 'late' : ''}">${used == null ? '—' : used + '%'}</strong><em>${p.budget ? 'of ' + money(p.budget) : 'No budget set'}</em></div>
+  </div>
+  <div class="tabs" role="tablist">${tabs.map(x => `<button class="tab" role="tab" data-ptab="${x[0]}" aria-selected="${x[0]===k}">${x[1]} (${x[2].length})</button>`).join('')}</div>
+  <div class="sechead"><h2>${t[1]}</h2><button class="btn small primary" data-add="${k}" data-prefill='${esc(JSON.stringify(k==='invoices'?{project:id,client:p.client}:{project:id}))}'>Add ${esc(SCHEMA[k].one)}</button></div>
+  ${rows.length ? table(k, rows, c => c.k !== 'project') : `<div class="empty"><p>Nothing here yet.</p></div>`}`;
+}
+
+/* ---------- tenders: import ---------- */
+const normKey = k => String(k).toLowerCase().replace(/[^a-z0-9]/g,'');
+function pick(o, ...keys){
+  for (const k of keys){
+    let v = k.split('.').reduce((a,p) => a == null ? undefined : a[p], o);
+    if ((v == null || v === '') && o && o.__norm) v = o.__norm[normKey(k)];
+    if (v != null && v !== '') return v;
+  }
+  return '';
+}
+const toLocalDT = s => { if (!s) return ''; const d = new Date(s); if (isNaN(d)) return ''; return new Date(d - d.getTimezoneOffset()*6e4).toISOString().slice(0,16); };
+const truthy = v => v === true || /^(true|yes|y|1)$/i.test(String(v).trim());
+const urlish = s => /^https?:\/\//i.test(String(s||'').trim()) ? String(s).trim() : '';
+const ETP_URL = 'https://kagiso933.github.io/etender-pro/';
+const SITE_URL = 'https://www.ryno-tec.co.za';
+const ETP_MODE = {online:'Online','online and in person':'Online and in person','in person':'In person',none:'No briefing',unknown:'Not stated'};
+const isEtp = r => r && typeof r.briefing === 'object' && r.briefing !== null && 'closingDate' in r && 'department' in r;
+function fromEtp(r){
+  const b = r.briefing || {};
+  return {
+    title: String(r.title || r.reference || '').replace(/\s+/g,' ').trim(), tenderNo: String(r.reference || ''),
+    buyer: String(r.department || ''), province: String(r.province || ''), category: String(r.category || ''),
+    value: r.value ? +r.value : null, closing: toLocalDT(r.closingDate),
+    briefing: ETP_MODE[b.mode] || 'Not stated', compulsory: b.compulsory === true, briefingAt: toLocalDT(b.date),
+    briefingVenue: String(b.venue || b.note || '').slice(0,500), briefingLink: urlish(b.link),
+    sourceUrl: urlish(r.portalUrl), docsUrl: urlish((r.documents || [])[0]?.url), ocid: String(r.id || ''),
+    _etp: true, _online: !!b.online,
+    _text: [r.title, r.reference, r.category, (r.matchedTerms || []).join(' '), 'ict'].join(' ')
+  };
+}
+function normTender(r){
+  if (isEtp(r)) return fromEtp(r);
+  const t = r.tender || {}, bs = t.briefingSession || r.briefingSession || {};
+  let title = String(pick(r,'tender.title','title','tenderTitle') || '').trim();
+  let desc = String(pick(r,'tender.description','description') || '').trim();
+  let no = String(pick(r,'tenderNumber','tenderNo','bidNumber','tender.id','tenderId') || '').trim();
+  if (desc && title && title.length <= 40 && /\d/.test(title) && desc.length > title.length){ no = title; title = desc; desc = ''; }
+  if (!title) title = desc;
+  const venue = String(pick(bs,'venue') || pick(r,'briefingVenue','briefingDetails','briefingSession') || '').trim();
+  const bdate = pick(bs,'date') || pick(r,'briefingDate','briefingDateTime');
+  const isSession = bs.isSession;
+  const compRaw = bs.compulsory !== undefined ? bs.compulsory : pick(r,'briefingCompulsory','compulsoryBriefing','compulsory');
+  const online = ONLINE_RE.test(venue) || truthy(pick(r,'onlineBriefing','virtualBriefing'));
+  const physical = /\b\d{1,5}\s+\w+.*\b(street|st|road|rd|avenue|ave|drive|dr|boulevard)\b|boardroom|board room|auditorium|committee room|offices?\b|building/i.test(venue);
+  let briefing = 'Not stated';
+  if (isSession === false && !venue && !bdate) briefing = 'No briefing';
+  else if (online && physical) briefing = 'Online and in person';
+  else if (online) briefing = 'Online';
+  else if (venue || bdate || isSession === true) briefing = 'In person';
+  const docs = Array.isArray(t.documents) ? t.documents.map(d => d.url) : [];
+  const docUrls = r.documentUrls || pick(r,'documentUrl','documentsUrl','documents') || docs;
+  const cats = [pick(r,'tender.mainProcurementCategory','category','procurementCategory'), ...(Array.isArray(t.additionalProcurementCategories) ? t.additionalProcurementCategories : [])].filter(Boolean);
+  const val = pick(r,'tender.value.amount','valueAmount','value','estimatedValue');
+  return {
+    title, tenderNo: no,
+    buyer: String(pick(r,'buyer.name','tender.procuringEntity.name','buyerName','department','organOfState','entity') || ''),
+    province: String(pick(r,'tender.province','province') || ''),
+    category: cats.join(', '),
+    value: val === '' ? null : (+String(val).replace(/[^\d.]/g,'') || null),
+    closing: toLocalDT(pick(r,'tender.tenderPeriod.endDate','closingDate','closingDateTime','closing')),
+    briefing, compulsory: truthy(compRaw), briefingAt: toLocalDT(bdate), briefingVenue: venue.slice(0,500),
+    briefingLink: urlish((venue.match(/https?:\/\/\S+/) || [])[0]) || urlish(pick(r,'briefingLink','meetingLink')),
+    sourceUrl: urlish(pick(r,'sourceUrl','url','link','tenderUrl')),
+    docsUrl: urlish(Array.isArray(docUrls) ? docUrls[0] : docUrls),
+    ocid: String(pick(r,'ocid') || ''),
+    _text: [title, desc, cats.join(' '), no].join(' ')
+  };
+}
+function parseCSV(text){
+  const rows = []; let row = [], f = '', q = false;
+  for (let i = 0; i < text.length; i++){
+    const c = text[i];
+    if (q){ if (c === '"'){ if (text[i+1] === '"'){ f += '"'; i++; } else q = false; } else f += c; }
+    else if (c === '"') q = true;
+    else if (c === ','){ row.push(f); f = ''; }
+    else if (c === '\n' || c === '\r'){ if (c === '\r' && text[i+1] === '\n') i++; row.push(f); rows.push(row); row = []; f = ''; }
+    else f += c;
+  }
+  if (f || row.length){ row.push(f); rows.push(row); }
+  const head = (rows.shift() || []).map(x => x.trim());
+  return rows.filter(r => r.some(x => x.trim())).map(r => { const o = {}; head.forEach((k,i) => o[k] = r[i] ?? ''); o.__norm = {}; head.forEach((k,i) => o.__norm[normKey(k)] = r[i] ?? ''); return o; });
+}
+let importing = false;
+async function importTenders(file){
+  if (importing) return;
+  let rows = [];
+  try {
+    const text = await file.text();
+    if (/\.csv$/i.test(file.name) || /^[^{\[]/.test(text.trim())) rows = parseCSV(text);
+    else {
+      const j = JSON.parse(text);
+      rows = Array.isArray(j) ? j : (j.releases || j.tenders || j.data || j.items || j.results || (j.records || []).map(r => r.compiledRelease || r) || []);
+    }
+    rows = rows.map(r => r && (r.compiledRelease || r)).filter(Boolean);
+  } catch(e){ toast("Couldn't read that file. Use a JSON or CSV export from the tender system."); return; }
+  const all = rows.map(normTender).filter(t => t.title);
+  const etp = all.some(t => t._etp);
+  const known = t => D.tenders.some(x => t.ocid && x.ocid === t.ocid);
+  const it = etp ? all.filter(t => (t._online || known(t) || CO !== 'rtc') && (CO === 'rtc' || tenderRe().test(t._text))) : all.filter(t => tenderRe().test(t._text));
+  if (!it.length){ toast(!all.length ? 'No tenders found in that file.' : etp && CO === 'rtc' ? `Read ${plural(all.length,'IT tender')}, but none has an online briefing.` : `Read ${plural(all.length,'tender')}, but none fit ${C().short}'s work.`); return; }
+  importing = true; toast(`Importing ${plural(it.length,tn())}…`);
+  let added = 0, updated = 0, failed = 0;
+  for (const t of it){
+    const {_text, _etp, _online, ...body} = t;
+    const ex = D.tenders.find(x => (body.ocid && x.ocid === body.ocid) || (body.tenderNo && x.tenderNo === body.tenderNo && x.buyer === body.buyer));
+    try {
+      if (ex){
+        const {id, ...old} = ex;
+        await saveItem('tenders', id, {...old, ...body, status: old.status || 'New', notes: old.notes || '', briefingLink: old.briefingLink || body.briefingLink});
+        updated++;
+      } else { await saveItem('tenders', null, {...body, status:'New', notes:''}); added++; }
+    } catch(e){ failed++; if (e && (e.code === 'invalid_argument' || e.code === 'quota_exceeded')){ writeError(e); break; } }
+  }
+  importing = false;
+  const online = it.filter(isOnline).length;
+  toast(`${plural(added,'new ' + tn())}, ${updated} updated, ${online} with an online briefing${failed ? `, ${failed} failed` : ''}.`);
+  ui.tenders.view = C().defView; render();
+}
+async function tenderToDeal(id){
+  const t = get('tenders', id); if (!t) return;
+  try {
+    let client = D.clients.find(c => (c.name||'').trim().toLowerCase() === (t.buyer||'').trim().toLowerCase());
+    const clientId = client ? client.id : await saveItem('clients', null, {name: t.buyer || 'Unknown buyer', industry:'Public sector', status:'Prospect', notes:''});
+    const existing = D.deals.find(d => d.tender === id);
+    if (existing){ dlg.close(); toast('This tender is already in the pipeline'); go('deals'); return; }
+    await saveItem('deals', null, {title: t.title, client: clientId, tender: id, value: t.value || null, stage:'Qualified', probability:null, close: (t.closing||'').slice(0,10), service:'', notes: [t.tenderNo && 'Tender ' + t.tenderNo, t.sourceUrl].filter(Boolean).join('\n')});
+    if (['New','Reviewing'].includes(t.status)){ const {id: _i, ...rest} = t; await saveItem('tenders', id, {...rest, status:'Bidding'}); }
+    dlg.close(); toast('Added to pipeline and marked as bidding');
+  } catch(e){ writeError(e); }
+}
+
+/* ---------- render: tenders ---------- */
+function renderTenders(){
+  const st = ui.tenders, now = nowLocal();
+  const upcoming = D.tenders.filter(t => isOpenTender(t) && isOnline(t) && t.briefingAt && t.briefingAt >= now).sort((a,b) => a.briefingAt.localeCompare(b.briefingAt)).slice(0,5);
+  const views = [['online','Online briefing'],['open','All open'],['all','Everything']];
+  const count = v => D.tenders.filter(t => v === 'online' ? isOpenTender(t) && isOnline(t) : v === 'open' ? isOpenTender(t) : true).length;
+  const f = SCHEMA.tenders.fields.find(x => x.k === 'status');
+  const statusChips = f.opt.map(o => { const n = D.tenders.filter(t => t.status === o).length; return n || st.status === o ? `<button class="chip" data-filter="tenders:${esc(o)}" aria-pressed="${st.status===o}">${esc(o)}<b>${n}</b></button>` : ''; }).join('');
+  const sy = CO === 'rtc' ? SYNC : (SYNC && SYNC.companies && SYNC.companies[CO]) ? {syncedAt: SYNC.syncedAt, ...SYNC.companies[CO]} : null;
+  const synced = sy && sy.syncedAt ? `Synced from eTender Pro ${fmtDT(toLocalDT(sy.syncedAt))}: ${CO === 'rtc' ? plural(+sy.online || 0,'open IT tender') + ' with an online briefing' : plural(+sy.open || 0,'open ' + tn())}${sy.added ? `, ${sy.added} new` : ''}.` : 'Synced from eTender Pro every morning.';
+  return `<header class="page-head"><div><h1>Tenders</h1><p class="sub">${esc(C().blurb)}, pulled from <a href="${ETP_URL}" target="_blank" rel="noopener">eTender Pro</a>, and where each bid stands.</p><p class="sub">${esc(synced)}</p></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="${ETP_URL}" target="_blank" rel="noopener">Open eTender Pro</a><label class="btn">Import file<input type="file" accept=".json,.csv,application/json,text/csv" data-import hidden></label><button class="btn primary" data-add="tenders">Add tender</button></div></header>
+  ${upcoming.length ? `<section class="panel" style="margin-bottom:24px"><h2>Next online briefings</h2><ul class="attn" style="margin-top:10px">${upcoming.map(t => `<li><button data-open="tenders:${t.id}"><span>${esc(t.title)}</span><span class="why">${esc(fmtDT(t.briefingAt))}${t.compulsory ? ', compulsory' : ''}</span></button></li>`).join('')}</ul></section>` : ''}
+  ${D.tenders.length ? `<div class="toolbar"><input type="search" placeholder="Search tenders" aria-label="Search tenders" data-search="tenders" value="${esc(st.q)}">
+    <div class="chips" role="group" aria-label="Which tenders">${views.map(([v,l]) => `<button class="chip" data-view="${v}" aria-pressed="${st.view===v}">${l}<b>${count(v)}</b></button>`).join('')}</div>
+    <div class="chips" role="group" aria-label="Filter by bid status"><button class="chip" data-filter="tenders:" aria-pressed="${!st.status}">Any status</button>${statusChips}</div></div>` : ''}
+  <div id="listBody">${listBody('tenders')}</div>`;
+}
+
+/* ---------- render: dashboard ---------- */
+function renderDash(){
+  const now = nowLocal(), td = today();
+  const ts = D.timesheets, mts = ts.filter(t => (t.date||'').startsWith(thisMonth()));
+  const hrs = sum(mts, t => t.hours), billHrs = sum(mts.filter(t=>t.billable), t => t.hours);
+  const unbilled = sum(ts.filter(t => t.billable && !t.invoiced), t => t.hours * rate(t.project));
+  const owed = D.invoices.filter(i => ['Sent','Overdue'].includes(invStatus(i)));
+  const overdue = D.invoices.filter(i => invStatus(i) === 'Overdue');
+  const openDeals = D.deals.filter(d => !['Won','Lost'].includes(d.stage));
+  const weighted = sum(openDeals, d => (+d.value||0) * dealP(d) / 100);
+  const openT = D.tenders.filter(isOpenTender), onlineT = openT.filter(isOnline);
+  const briefings = openT.filter(t => t.briefingAt && t.briefingAt >= now && daysUntil(t.briefingAt.slice(0,10)) <= 14).sort((a,b) => a.briefingAt.localeCompare(b.briefingAt));
+  const bidding = D.tenders.filter(t => t.status === 'Bidding');
+  const closingSoon = bidding.filter(t => t.closing && t.closing >= now && daysUntil(t.closing.slice(0,10)) <= 7);
+  const docIssues = D.compliance.filter(c => ['Expired','Expiring'].includes(docStatus(c)));
+  const missing = CORE_DOCS.filter(d => !D.compliance.some(c => c.doc === d && docStatus(c) !== 'Expired'));
+  const lawyer = D.contracts.filter(c => c.status === 'With lawyer');
+  const expiring = D.contracts.filter(c => c.status === 'Signed' && c.end && daysUntil(c.end) >= 0 && daysUntil(c.end) <= 60);
+  const activeProj = D.projects.filter(p => p.status === 'Active');
+  const burn = sum(D.subscriptions.filter(s => s.status !== 'Cancelled'), s => s.cost);
+  const yr = td.slice(0,4);
+  const paidYear = sum(D.invoices.filter(i => i.status === 'Paid' && (i.paidOn || i.issued || '').startsWith(yr)), invTotal);
+  const lateTasks = D.tasks.filter(t => t.status !== 'Done' && t.status !== 'Blocked' && t.due && t.due < td);
+  const blocked = D.tasks.filter(t => t.status === 'Blocked');
+
+  if (Object.keys(SCHEMA).every(k => !D[k].length)){
+    return `<section class="hero"><h1>Welcome to the ${esc(C().short)} Business Hub</h1>
+    <p class="headline">Nothing recorded yet. Load your compliance documents, then review the ${tn()}s from eTender Pro.</p>
+    <div class="hero-cta"><button class="btn primary" data-add="compliance">Add compliance document</button><button class="btn" data-go="tenders">Go to tenders</button><button class="btn" data-add="clients">Add client</button></div></section>`;
+  }
+
+  const headline = CO !== 'rtc' ? `<span class="q">${plural(openT.length,'open ' + tn())}</span>, ${briefings.length ? `<span class="q">${plural(briefings.length,'briefing')}</span> in the next two weeks` : 'no briefings in the next two weeks'}, and <span class="${overdue.length?'bad':'q'}">${money(sum(owed,invTotal))}</span> owed to you.` : `<span class="q">${plural(onlineT.length,'open IT tender')}</span> with online briefings, ${briefings.length ? `<span class="q">${plural(briefings.length,'briefing')}</span> in the next two weeks` : 'no briefings in the next two weeks'}, and <span class="${overdue.length?'bad':'q'}">${money(sum(owed,invTotal))}</span> owed to you.`;
+
+  const attn = [];
+  briefings.filter(t => daysUntil(t.briefingAt.slice(0,10)) <= 7).forEach(t => attn.push({bad:t.compulsory,open:`tenders:${t.id}`,t:`${t.compulsory ? 'Compulsory briefing' : 'Briefing'}: ${t.title}`,w:`${fmtDT(t.briefingAt)}${isOnline(t) ? ', online' : ''}`}));
+  closingSoon.forEach(t => attn.push({bad:1,open:`tenders:${t.id}`,t:`Bid closes soon: ${t.title}`,w:fmtDT(t.closing)}));
+  missing.forEach(d => attn.push({bad:1,add:'compliance',pre:{doc:d},t:`Compliance pack is missing: ${d}`,w:'Needed for most tenders'}));
+  docIssues.forEach(c => attn.push({bad:docStatus(c)==='Expired',open:`compliance:${c.id}`,t:`${c.doc} ${docStatus(c) === 'Expired' ? 'has expired' : 'expires soon'}`,w:fmtDate(c.expires)}));
+  overdue.forEach(i => attn.push({bad:1,open:`invoices:${i.id}`,t:`${i.number} to ${refName('clients',i.client)} is overdue`,w:`${money(invTotal(i))}, due ${fmtDate(i.due)}`}));
+  lawyer.forEach(c => attn.push({open:`contracts:${c.id}`,t:`${c.title} is with ${c.lawyer || 'the lawyer'}`,w:c.party || ''}));
+  expiring.forEach(c => attn.push({open:`contracts:${c.id}`,t:`${c.title} expires in ${plural(daysUntil(c.end),'day')}`,w:fmtDate(c.end)}));
+  blocked.forEach(t => attn.push({bad:1,open:`tasks:${t.id}`,t:`Blocked: ${t.title}`,w:refName('projects',t.project)}));
+  D.subscriptions.filter(x => x.status !== 'Cancelled' && x.renews && daysUntil(x.renews) <= (x.status === 'Trial' ? 10 : 14)).forEach(x => { const d = daysUntil(x.renews);
+    attn.push({bad:d <= 3, open:`subscriptions:${x.id}`, t:x.status === 'Trial' ? `${x.service} trial ends: keep it or cancel` : `${x.service} renews`, w:`${fmtDate(x.renews)}${d < 0 ? ' (passed)' : d === 0 ? ', today' : ', in ' + plural(d,'day')}`}); });
+  lateTasks.forEach(t => attn.push({open:`tasks:${t.id}`,t:`Late: ${t.title}`,w:`was due ${fmtDate(t.due)}`}));
+  statutory().filter(r => daysUntil(r.w) <= 30).forEach(r => attn.push({bad: daysUntil(r.w) < 0, go: 'public', t: r.t, w: daysUntil(r.w) < 0 ? 'overdue since ' + fmtDate(r.w) : 'due ' + fmtDate(r.w)}));
+  D.quotes.filter(q => quoteStatus(q) === 'Sent' && q.sentAt && (Date.now() - new Date(q.sentAt)) > 7*864e5).forEach(q => attn.push({open:`quotes:${q.id}`,t:`Follow up on quote ${q.number}${q.client ? ' to ' + refName('clients', q.client) : ''}`,w:`sent ${fmtDate(q.sentAt.slice(0,10))}`}));
+  D.quotes.filter(q => quoteStatus(q) === 'Sent' && q.validUntil && daysUntil(q.validUntil) <= 5).forEach(q => attn.push({open:`quotes:${q.id}`,t:`Quote ${q.number} expires soon`,w:fmtDate(q.validUntil)}));
+  if (unbilled > 0) attn.push({go:'timesheets',t:`${money(unbilled)} of billable time not invoiced yet`,w:'Timesheets'});
+
+  const attnBtn = a => a.open ? `data-open="${a.open}"` : a.add ? `data-add="${a.add}" data-prefill='${esc(JSON.stringify(a.pre||{}))}'` : `data-go="${a.go}"`;
+
+  return `<section class="hero"><h1>${new Date().toLocaleDateString('en-ZA',{weekday:'long',day:'numeric',month:'long'})}</h1>
+  <p class="headline">${headline}</p>
+  <div class="hero-cta"><button class="btn primary" data-go="tenders">Review tenders</button><button class="btn" data-go="deals">Open pipeline</button></div></section>
+  <div class="strip">
+    <div class="stat"><span>Open ${tn()}s</span><strong>${openT.length}</strong><em>${onlineT.length} with online briefing</em></div>
+    <div class="stat"><span>Bids in progress</span><strong>${bidding.length}</strong><em>${plural(closingSoon.length,'closing')} this week</em></div>
+    <div class="stat"><span>Weighted pipeline</span><strong>${money(weighted)}</strong><em>${plural(openDeals.length,'open deal')}</em></div>
+    <div class="stat"><span>Hours this month</span><strong>${hrs}</strong><em>${hrs ? Math.round(billHrs/hrs*100) : 0}% billable</em></div>
+    <div class="stat"><span>Unbilled work</span><strong>${money(unbilled)}</strong></div>
+  </div>
+  <div class="cols">
+    <div>
+      <section class="panel"><h2>Needs attention</h2>${attn.length ? `<ul class="attn">${attn.map(a => `<li><button ${attnBtn(a)}><span class="tag ${a.bad?'bad':''}"></span><span>${esc(a.t)}</span><span class="why">${esc(a.w)}</span></button></li>`).join('')}</ul>` : `<p class="attn clear">All clear. No briefings this week, nothing overdue or expiring.</p>`}</section>
+      <section class="panel"><h2>Upcoming briefings</h2>${briefings.length ? `<ul class="attn">${briefings.map(t => `<li><button data-open="tenders:${t.id}"><span>${esc(t.title)}<br><span class="muted">${esc(t.buyer||'')}</span></span><span class="why">${esc(fmtDT(t.briefingAt))}<br>${esc(t.briefing)}${t.compulsory ? ', compulsory' : ''}</span></button></li>`).join('')}</ul>` : `<p class="muted">No briefings in the next two weeks. <button class="link" data-go="tenders">See tenders</button></p>`}</section>
+    </div>
+    <div>
+      <section class="panel"><h2>Money</h2>
+        <dl class="money">
+          <dt>Owed to you</dt><dd class="${overdue.length ? 'late' : ''}">${money(sum(owed,invTotal))}</dd>
+          <dt>Paid in ${yr}</dt><dd>${money(paidYear)}</dd>
+          <dt>Subscriptions per month</dt><dd>${money(burn)}</dd>
+          <dt class="total">Compliance documents valid</dt><dd class="total">${D.compliance.filter(c => docStatus(c) !== 'Expired').length} of ${D.compliance.length}</dd>
+        </dl>
+      </section>
+      <section class="panel"><h2>Active projects</h2>${activeProj.length ? `<ul class="attn">${activeProj.map(p => { const tk = D.tasks.filter(t=>t.project===p.id); const dn = tk.filter(t=>t.status==='Done').length;
+        return `<li><button data-open="projects:${p.id}"><span>${esc(p.name)}</span><span class="why">${dn}/${tk.length} tasks${p.end ? ', ends ' + fmtDate(p.end) : ''}</span></button></li>`; }).join('')}</ul>` : `<p class="muted">No active projects.</p>`}</section>
+    </div>
+  </div>`;
+}
+
+/* ---------- business details ---------- */
+const SET_KEY = 'rynotec-hub-settings-v1';
+const DEFAULT_SETTINGS = {
+  name: 'Ryno-Tec Consulting', tagline: 'Enterprise Infrastructure & Platform Engineering',
+  legalName: '', regNo: '', regDate: '', yearEnd: 'October', taxRef: '', csdNo: '', publicOfficer: '', vatRegistered: false, vatNo: '',
+  mailAddress: 'kagiso@ryno-tec.co.za', publicEmail: 'info@ryno-tec.co.za', phone: '', website: 'www.ryno-tec.co.za', address: '',
+  bankName: '', accountName: '', accountNo: '', branchCode: '',
+  validityDays: 30,
+  paymentTerms: 'Payment due within 30 days of invoice date.',
+  quoteTerms: 'Prices are in South African rand. This quotation is valid until the date shown.',
+  signoff: 'Kind regards,', sigName: 'Kagiso Tshukudu', sigTitle: 'Founder & Principal Engineer', sigReg: true, sigBee: true, sigLogo: true, sigLogoUrl: 'https://www.ryno-tec.co.za/brand/email-signature-logo.png'
+};
+const DEFAULT_SETTINGS_LLP = {
+  name: 'Lesego Laka Projects', tagline: 'Facilities, grounds, agriculture & supply',
+  legalName: 'Lesego Laka Projects (Pty) Ltd', regNo: '2019/545325/07', regDate: '2019-10-29', yearEnd: 'January', taxRef: '9453658198', csdNo: 'MAAA0848616', publicOfficer: '', vatRegistered: false, vatNo: '',
+  mailAddress: '', publicEmail: 'info@lesegolakaprojects.com', phone: '', website: 'www.lesegolakaprojects.com', address: '8666 Phase 5\nMorula View\nMabopane\n0190',
+  bankName: '', accountName: '', accountNo: '', branchCode: '',
+  validityDays: 30,
+  paymentTerms: 'Payment due within 30 days of invoice date.',
+  quoteTerms: 'Prices are in South African rand. Quantities are based on our site measurement and will be confirmed before work starts. This quotation is valid until the date shown.',
+  signoff: 'Kind regards,', sigName: 'Kagiso Tshukudu', sigTitle: 'Director', sigReg: true, sigBee: true, sigLogo: false, sigLogoUrl: ''
+};
+const SETTINGS_BY = {rtc: {}, llp: {}};
+const settingsDoc = () => CO === 'llp' ? 'settings/business-llp' : 'settings/business';
+const setKey = () => CO === 'llp' ? SET_KEY + '-llp' : SET_KEY;
+const S = () => ({...(CO === 'llp' ? DEFAULT_SETTINGS_LLP : DEFAULT_SETTINGS), ...(SETTINGS_BY[CO] || {})});
+const SETTING_FIELDS = [
+  {k:'name',l:'Trading name',t:'text',req:1},
+  {k:'tagline',l:'Tagline',t:'text'},
+  {k:'legalName',l:'Registered company name',t:'text',hint:'Exactly as registered with CIPC, e.g. Company Name (Pty) Ltd'},
+  {k:'regNo',l:'CIPC registration number',t:'text'},
+  {k:'regDate',l:'Registration date',t:'date',hint:'Used to work out CIPC and SARS deadlines'},
+  {k:'yearEnd',l:'Financial year end',t:'select',opt:['January','February','March','April','May','June','July','August','September','October','November','December']},
+  {k:'taxRef',l:'Income tax reference',t:'text'},
+  {k:'csdNo',l:'CSD supplier number',t:'text',hint:'MAAA number from the Central Supplier Database'},
+  {k:'publicOfficer',l:'SARS public officer',t:'text',hint:'Name of the person registered as public officer'},
+  {k:'vatRegistered',l:'Registered VAT vendor',t:'bool'},
+  {k:'vatNo',l:'VAT number',t:'text',hint:'Quotes only add VAT when you are a registered vendor'},
+  {k:'mailAddress',l:'Business email',t:'email',req:1,hint:'The Mail page shows mail sent to and from this address'},
+  {k:'publicEmail',l:'Public email',t:'email',hint:'Shown on quotes and supplier details, e.g. info@'},
+  {k:'phone',l:'Phone',t:'tel'},
+  {k:'website',l:'Website',t:'text'},
+  {k:'address',l:'Business address',t:'textarea'},
+  {k:'bankName',l:'Bank',t:'text'},
+  {k:'accountName',l:'Account name',t:'text'},
+  {k:'accountNo',l:'Account number',t:'text'},
+  {k:'branchCode',l:'Branch code',t:'text'},
+  {k:'validityDays',l:'Quotes valid for (days)',t:'number'},
+  {k:'paymentTerms',l:'Payment terms',t:'textarea'},
+  {k:'quoteTerms',l:'Quote terms',t:'textarea'},
+  {k:'signoff',l:'Email sign-off',t:'text',hint:'e.g. Kind regards,'},
+  {k:'sigName',l:'Signature name',t:'text'},
+  {k:'sigTitle',l:'Signature job title',t:'text'},
+  {k:'sigReg',l:'Show registration number in signature',t:'bool'},
+  {k:'sigBee',l:'Show B-BBEE level in signature',t:'bool'},
+  {k:'sigLogo',l:'Show logo in signature',t:'bool'},
+  {k:'sigLogoUrl',l:'Signature logo image',t:'url',hint:'A PNG hosted on your website; email clients load it from there'}
+];
+async function saveSettings(body){
+  if (MODE === 'db'){ await DB.doc(settingsDoc()).set(body); return; }
+  SETTINGS_BY[CO] = body; lsSet(setKey(), JSON.stringify(body)); render();
+}
+function renderSettings(){
+  const s = S();
+  const row = (l, v) => `<dt>${esc(l)}</dt><dd>${v ? esc(v) : '<span class="muted">Not set</span>'}</dd>`;
+  const bank = [s.bankName, s.accountName, s.accountNo && 'Acc ' + s.accountNo, s.branchCode && 'Branch ' + s.branchCode].filter(Boolean).join(', ');
+  return `<header class="page-head"><div><h1>Business details</h1><p class="sub">What appears on your quotes and emails.</p></div><button class="btn primary" data-edit-settings>Edit details</button></header>
+  <dl class="money details">
+    ${row('Trading name', s.name)}${row('Registered name', s.legalName)}${row('CIPC number', s.regNo)}${row('Registered on', s.regDate && fmtDate(s.regDate))}${row('Year end', s.yearEnd)}${row('Income tax reference', s.taxRef)}${row('CSD supplier number', s.csdNo)}${row('SARS public officer', s.publicOfficer)}
+    ${row('VAT', s.vatRegistered ? 'Registered' + (s.vatNo ? ', ' + s.vatNo : '') : 'Not a VAT vendor, quotes exclude VAT')}
+    ${row('Business email', s.mailAddress)}${row('Public email', s.publicEmail)}${row('Phone', s.phone)}${row('Website', s.website)}
+    ${row('Address', s.address)}${row('Banking', bank)}
+    ${row('Quotes valid for', s.validityDays ? s.validityDays + ' days' : '')}${row('Payment terms', s.paymentTerms)}
+  </dl>
+  <section class="panel sigpanel"><div class="sechead"><h2>Email signature</h2><div class="row-btns"><button class="btn" data-edit-settings>Edit</button><button class="btn primary" data-copysig>Copy for Gmail</button></div></div>
+    <div class="sigcard" id="sigCard">${signatureHtml()}</div>
+    <p class="muted small">The hub adds this below your sign-off on every email, reply, quote and supplier pack. To use it in Gmail too, choose Copy for Gmail, then paste it in Gmail Settings, General, Signature.</p></section>`;
+}
+const sdlg = () => $('#sdlg'), sform = () => $('#sForm');
+function openSettings(){
+  const s = S();
+  sform().innerHTML = `<div class="dhead"><h2>Business details</h2><button type="button" class="x" data-sclose aria-label="Close">×</button></div>
+  <div class="fields">${SETTING_FIELDS.map(f => fieldHTML(f, s[f.k])).join('')}</div>
+  <div class="dfoot"><span class="spacer"></span><button type="button" class="btn" data-sclose>Cancel</button><button type="submit" class="btn primary">Save details</button></div>`.replace(/(id|for)="f_/g, '$1="s_f_');
+  if (!sdlg().open) sdlg().showModal();
+}
+
+/* ---------- email signature ---------- */
+function sigParts(){
+  const s = S(), bee = latestDoc('B-BBEE affidavit or certificate');
+  const lvl = bee && docStatus(bee) !== 'Expired' ? ((bee.notes || '').match(/Level\s*(\d)/i) || [])[1] : '';
+  const region = (s.address || '').split('\n').map(x => x.trim()).filter(x => x && !/^\d{4}$/.test(x)).slice(-1)[0];
+  const legal = [s.sigReg && s.regNo && 'Reg. no. ' + s.regNo, s.vatRegistered && s.vatNo && 'VAT no. ' + s.vatNo, s.sigBee && lvl && `B-BBEE Level ${lvl} contributor`, region && region + ', South Africa'].filter(Boolean);
+  const web = (s.website || '').replace(/^https?:\/\//, '');
+  return {s, web, legal};
+}
+function signatureText(){
+  const {s, web, legal} = sigParts();
+  return [s.sigName, s.sigTitle, s.legalName || s.name, [s.mailAddress, s.phone, web].filter(Boolean).join(' | '), legal.join(' | ')].filter(Boolean).join('\n');
+}
+function signatureHtml(){
+  const {s, web, legal} = sigParts();
+  const a = (href, t) => `<a href="${esc(href)}" style="color:${C().inkHex};text-decoration:none">${esc(t)}</a>`;
+  const contact = [s.mailAddress && a('mailto:' + s.mailAddress, s.mailAddress), s.phone && a('tel:' + s.phone.replace(/[^\d+]/g, ''), s.phone), web && a('https://' + web, web)].filter(Boolean).join(' <span style="color:#bbbbbb">|</span> ');
+  const logo = s.sigLogo !== false && /^https:\/\//.test(s.sigLogoUrl || '') ? `<tr><td style="padding:0 0 10px 0"><a href="https://${esc(web || 'ryno-tec.co.za')}" style="text-decoration:none"><img src="${esc(s.sigLogoUrl)}" width="180" height="58" alt="${esc(s.legalName || s.name)}" style="display:block;border:0;width:180px;height:58px"></a></td></tr>` : '';
+  return `<table cellpadding="0" cellspacing="0" border="0" style="margin-top:14px;border-collapse:collapse;font-family:Arial,Helvetica,sans-serif">${logo}<tr><td style="border-left:3px solid ${C().accentHex};padding:2px 0 2px 12px">
+<div style="font-size:15px;font-weight:bold;color:#1a1a1a;line-height:1.3">${esc(s.sigName || '')}</div>
+${s.sigTitle ? `<div style="font-size:13px;color:#666666;line-height:1.4">${esc(s.sigTitle)}</div>` : ''}
+<div style="font-size:13px;font-weight:bold;color:#1a1a1a;line-height:1.4;margin-top:8px">${esc(s.legalName || s.name)}</div>
+${s.tagline ? `<div style="font-size:12px;color:#666666;line-height:1.4">${esc(s.tagline)}</div>` : ''}
+${contact ? `<div style="font-size:13px;line-height:1.5;margin-top:6px">${contact}</div>` : ''}
+${legal.length ? `<div style="font-size:11px;color:#888888;line-height:1.5;margin-top:6px">${esc(legal.join(' \u00b7 '))}</div>` : ''}
+</td></tr></table>`;
+}
+function bodyHtml(text){
+  return `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#222222;line-height:1.5">${String(text || '').trim().split(/\n{2,}/).map(p => `<p style="margin:0 0 12px">${esc(p).replace(/\n/g, '<br>')}</p>`).join('')}</div>`;
+}
+function withSignature(text, on){
+  if (!on || window.HUB_M365) return {body: text};
+  const t = String(text || '').replace(/\s+$/, '');
+  return {body: t + '\n\n' + signatureText(), htmlBody: bodyHtml(t) + signatureHtml()};
+}
+const sigPreview = () => `<div class="sigprev" aria-label="Signature preview">${signatureHtml()}</div>`;
+
+/* ---------- quotes ---------- */
+const QUNITS = ['hours','days','each','month','lump sum','m²','m','lot','kg'];
+const quoteTotals = q => {
+  const sub = (q.items || []).reduce((a, it) => a + (+it.qty || 0) * (+it.rate || 0), 0);
+  const vat = q.vat && S().vatRegistered ? Math.round(sub * 15) / 100 : 0;
+  return {sub, vat, total: sub + vat};
+};
+const quoteStatus = q => (q.status === 'Sent' && q.validUntil && q.validUntil < today()) ? 'Expired' : (q.status || 'Draft');
+function nextQuoteNo(){
+  const y = today().slice(0,4), pre = `${C().prefix}Q-${y}-`;
+  const n = D.quotes.map(q => q.number || '').filter(s => s.startsWith(pre)).map(s => +s.slice(pre.length) || 0);
+  return pre + String((n.length ? Math.max(...n) : 0) + 1).padStart(3,'0');
+}
+const qdlg = () => $('#qdlg'), qform = () => $('#qForm');
+let QED = null;
+function openQuote(id, prefill){
+  const s = S();
+  let q = id ? get('quotes', id) : null;
+  if (id && !q) return toast('That quote no longer exists.');
+  q = q ? JSON.parse(JSON.stringify(q)) : {
+    number: nextQuoteNo(), status: 'Draft', issued: today(), validUntil: addDays(today(), +s.validityDays || 30),
+    vat: !!s.vatRegistered, terms: s.quoteTerms, items: [{desc:'', qty:1, unit:C().unit, rate:''}], ...(prefill || {})
+  };
+  if (!q.items || !q.items.length) q.items = [{desc:'', qty:1, unit:C().unit, rate:''}];
+  QED = {id, q};
+  const ref = (k, v, label) => fieldHTML({k, l:label, t:'ref', ref:k === 'client' ? 'clients' : k === 'project' ? 'projects' : 'tenders'}, v);
+  qform().innerHTML = `<div class="dhead"><h2>${id ? 'Quote ' + esc(q.number) : 'New quote ' + esc(q.number)}</h2><button type="button" class="x" data-qclose aria-label="Close">×</button></div>
+  <div class="fields">
+    ${ref('client', q.client, 'Client')}
+    ${fieldHTML({k:'contactName',l:'Contact person',t:'text'}, q.contactName)}
+    ${fieldHTML({k:'email',l:'Send to',t:'email',hint:'Separate several addresses with commas'}, q.email)}
+    ${fieldHTML({k:'title',l:'Quote for',t:'text',req:1,hint:CO === 'llp' ? 'e.g. Repainting of 6 classrooms' : 'e.g. Intune rollout for 250 devices'}, q.title)}
+    ${ref('project', q.project, 'Project')}
+    ${ref('tender', q.tender, 'Tender')}
+    ${fieldHTML({k:'issued',l:'Issued',t:'date',req:1}, q.issued)}
+    ${fieldHTML({k:'validUntil',l:'Valid until',t:'date',req:1}, q.validUntil)}
+    ${fieldHTML({k:'status',l:'Status',t:'select',opt:['Draft','Sent','Accepted','Declined']}, q.status)}
+    <div class="f check"><input id="q_vat" name="vat" type="checkbox" ${q.vat && s.vatRegistered ? 'checked' : ''} ${s.vatRegistered ? '' : 'disabled'}><label for="q_vat">Add VAT at 15%${s.vatRegistered ? '' : ' (not a VAT vendor)'}</label></div>
+    <div class="f wide"><label>Line items</label>
+      <div class="qitems-wrap"><table class="qitems"><thead><tr><th>Description</th><th class="num">Qty</th><th>Unit</th><th class="num">Rate (R)</th><th class="num">Amount</th><th><span class="sr">Remove</span></th></tr></thead><tbody id="qRows"></tbody></table></div>
+      <div class="qfoot"><button type="button" class="btn small" data-qadd>Add line</button><dl class="qtot" id="qTot"></dl></div>
+    </div>
+    ${fieldHTML({k:'notes',l:'Scope and assumptions',t:'textarea'}, q.notes)}
+    ${fieldHTML({k:'terms',l:'Terms',t:'textarea'}, q.terms)}
+  </div>
+  <div class="dfoot">
+    ${id ? '<button type="button" class="btn danger" data-qdel>Delete</button>' : ''}
+    ${window.jspdf ? '<button type="button" class="btn" data-qpdf>Download PDF</button>' : ''}
+    ${MCP ? '<button type="button" class="btn" data-qdraft>Save as Outlook draft</button><button type="button" class="btn" data-qsend>Email quote</button>' : ''}
+    ${id && q.status === 'Accepted' && !q.invoice ? '<button type="button" class="btn" data-qinv>Create invoice</button>' : ''}
+    <span class="spacer"></span><button type="button" class="btn" data-qclose>Cancel</button><button type="submit" class="btn primary">Save quote</button>
+  </div>`;
+  qform().innerHTML = qform().innerHTML.replace(/(id|for)="f_/g, '$1="q_f_');
+  drawQRows();
+  if (!qdlg().open) qdlg().showModal();
+}
+function drawQRows(){
+  $('#qRows').innerHTML = QED.q.items.map((it, i) => `<tr data-i="${i}">
+    <td><textarea rows="1" data-qf="desc" aria-label="Description, line ${i+1}">${esc(it.desc)}</textarea></td>
+    <td><input type="number" min="0" step="any" inputmode="decimal" data-qf="qty" value="${esc(it.qty)}" aria-label="Quantity, line ${i+1}"></td>
+    <td><select data-qf="unit" aria-label="Unit, line ${i+1}">${QUNITS.map(u => `<option ${u === it.unit ? 'selected' : ''}>${u}</option>`).join('')}</select></td>
+    <td><input type="number" min="0" step="any" inputmode="decimal" data-qf="rate" value="${esc(it.rate)}" aria-label="Rate, line ${i+1}"></td>
+    <td class="num" data-amt>${money((+it.qty || 0) * (+it.rate || 0))}</td>
+    <td><button type="button" class="x" data-qrm="${i}" aria-label="Remove line ${i+1}" ${QED.q.items.length < 2 ? 'disabled' : ''}>×</button></td></tr>`).join('');
+  drawQTot();
+}
+function drawQTot(){
+  QED.q.vat = $('#q_vat')?.checked || false;
+  const t = quoteTotals(QED.q);
+  $('#qTot').innerHTML = `<dt>Subtotal</dt><dd>${money(t.sub)}</dd>${S().vatRegistered ? `<dt>VAT 15%</dt><dd>${money(t.vat)}</dd>` : ''}<dt class="total">Total</dt><dd class="total">${money(t.total)}</dd>`;
+}
+function readQuote(){
+  const f = qform(), fd = new FormData(f), q = QED.q;
+  ['client','contactName','email','title','project','tender','issued','validUntil','status','notes','terms'].forEach(k => q[k] = (fd.get(k) || '').toString().trim());
+  q.vat = !!$('#q_vat')?.checked;
+  q.items = q.items.map(it => ({desc: String(it.desc || '').trim(), qty: it.qty === '' ? '' : +it.qty, unit: it.unit || 'each', rate: it.rate === '' ? '' : +it.rate}));
+  q.total = quoteTotals(q).total;
+  return q;
+}
+async function persistQuote(){
+  const f = qform();
+  if (!f.checkValidity()){ f.reportValidity(); return null; }
+  const q = readQuote();
+  const body = {...q}; delete body.id;
+  const id = await saveItem('quotes', QED.id, body);
+  QED.id = id;
+  return {...q, id};
+}
+const emails = s => String(s || '').split(/[,;\s]+/).map(x => x.trim()).filter(x => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x));
+const quoteReady = q => {
+  if (!emails(q.email).length) return 'Add an email address to send the quote to.';
+  if (!q.items.some(it => it.desc && +it.rate > 0)) return 'Add at least one line item with a description and rate.';
+  return '';
+};
+
+/* PDF */
+const LOGO_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="50 -10 320 320"><path d="M80 300 V80 H200 L240 120 V190 L200 230 H80" fill="none" stroke="#ffffff" stroke-width="40"/><path d="M155 230 L340 280" fill="none" stroke="#ffffff" stroke-width="40"/><path d="M146 12 H96 V60 H146" fill="none" stroke="#ffffff" stroke-width="28"/><path d="M254.1 226.4 L341.1 249.2" fill="none" stroke="#ff6b35" stroke-width="34"/><polygon points="313.6,245.9 351.2,136.4 347.6,134.6 281.6,229.7" fill="#ff6b35"/></svg>';
+const LOGO_PNG = {};
+function logoPng(){
+  const co = CO, svg = C().logo || LOGO_SVG, bg = C().darkHex;
+  if (LOGO_PNG[co]) return Promise.resolve(LOGO_PNG[co]);
+  return new Promise(res => {
+    const img = new Image();
+    img.onload = () => { try { const c = document.createElement('canvas'); c.width = c.height = 160; const x = c.getContext('2d'); x.fillStyle = bg; x.fillRect(0, 0, 160, 160); x.drawImage(img, 0, 0, 160, 160); LOGO_PNG[co] = c.toDataURL('image/jpeg', 0.9); } catch(e){ LOGO_PNG[co] = null; } res(LOGO_PNG[co]); };
+    img.onerror = () => res(null);
+    setTimeout(() => res(LOGO_PNG[co] || null), 2500);
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  });
+}
+const pm = v => money(v).replace(/[  ]/g, ' ');
+async function quotePdf(q){
+  const s = S(), t = quoteTotals(q), {jsPDF} = window.jspdf;
+  const doc = new jsPDF({unit:'mm', format:'a4', compress:true});
+  const W = 210, L = 14, R = 196, logo = await logoPng(), DK = C().dark, AC = C().accent;
+  const client = q.client ? get('clients', q.client) : null;
+  const header = () => {
+    doc.setFillColor(...DK); doc.rect(0, 0, W, 34, 'F');
+    if (logo) doc.addImage(logo, 'JPEG', L, 7, 20, 20, 'logo-' + CO);
+    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.text(s.name, logo ? 38 : L, 16);
+    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(203,213,225); doc.text(s.tagline || '', logo ? 38 : L, 22);
+    doc.setTextColor(...AC); doc.setFont('helvetica','bold'); doc.setFontSize(18); doc.text('QUOTATION', R, 16, {align:'right'});
+    doc.setTextColor(255,255,255); doc.setFontSize(10); doc.setFont('helvetica','normal'); doc.text(q.number, R, 23, {align:'right'});
+    doc.setDrawColor(...AC); doc.setLineWidth(1.2); doc.line(0, 34, W, 34);
+  };
+  header();
+  let y = 46;
+  doc.setTextColor(51,51,51); doc.setFontSize(9);
+  const from = [s.legalName || s.name, s.regNo && 'Reg. no. ' + s.regNo, s.vatRegistered && s.vatNo && 'VAT no. ' + s.vatNo, ...(s.address || '').split('\n'), s.publicEmail || s.mailAddress, s.phone, s.website].filter(Boolean);
+  const to = [client?.name, q.contactName, ...emails(q.email)].filter(Boolean);
+  doc.setFont('helvetica','bold'); doc.text('From', L, y); doc.text('Prepared for', 120, y);
+  doc.setFont('helvetica','normal');
+  from.forEach((l, i) => doc.text(String(l), L, y + 5 + i * 4.5));
+  to.forEach((l, i) => doc.text(String(l), 120, y + 5 + i * 4.5));
+  y += 8 + Math.max(from.length, to.length, 1) * 4.5;
+  const tender = q.tender ? get('tenders', q.tender) : null, project = q.project ? get('projects', q.project) : null;
+  const meta = [['Issued', fmtDate(q.issued)], ['Valid until', fmtDate(q.validUntil)], ['Reference', tender?.tenderNo || project?.name || '']].filter(m => m[1]);
+  doc.setFillColor(245,245,245); doc.rect(L, y, R - L, 12, 'F');
+  meta.forEach((m, i) => { const x = L + 4 + i * 62; doc.setFontSize(7.5); doc.setTextColor(102,102,102); doc.text(m[0].toUpperCase(), x, y + 4.5); doc.setFontSize(9.5); doc.setTextColor(26,26,26); doc.text(doc.splitTextToSize(m[1], 58)[0], x, y + 9.5); });
+  y += 20;
+  doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(26,26,26);
+  doc.splitTextToSize(q.title || 'Quotation', R - L).forEach(l => { doc.text(l, L, y); y += 6; });
+  y += 2;
+  const cols = {desc: L + 2, qty: 120, unit: 124, rate: 166, amt: R - 2};
+  const thead = () => {
+    doc.setFillColor(...DK); doc.rect(L, y, R - L, 8, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(255,255,255);
+    doc.text('Description', cols.desc, y + 5.4); doc.text('Qty', cols.qty, y + 5.4, {align:'right'}); doc.text('Unit', cols.unit, y + 5.4);
+    doc.text('Rate', cols.rate, y + 5.4, {align:'right'}); doc.text('Amount', cols.amt, y + 5.4, {align:'right'});
+    y += 8; doc.setFont('helvetica','normal'); doc.setTextColor(51,51,51); doc.setFontSize(9);
+  };
+  const ensure = h => { if (y + h > 272){ doc.addPage(); header(); y = 46; thead(); } };
+  thead();
+  q.items.filter(it => it.desc || +it.rate).forEach((it, i) => {
+    const lines = doc.splitTextToSize(it.desc || '', 100), h = Math.max(lines.length * 4.4 + 4, 8);
+    ensure(h);
+    if (i % 2) { doc.setFillColor(250,250,250); doc.rect(L, y, R - L, h, 'F'); }
+    doc.text(lines, cols.desc, y + 5.2);
+    doc.text(String(it.qty ?? ''), cols.qty, y + 5.2, {align:'right'}); doc.text(String(it.unit || ''), cols.unit, y + 5.2);
+    doc.text(pm(it.rate || 0), cols.rate, y + 5.2, {align:'right'}); doc.text(pm((+it.qty || 0) * (+it.rate || 0)), cols.amt, y + 5.2, {align:'right'});
+    y += h; doc.setDrawColor(224,224,224); doc.setLineWidth(0.2); doc.line(L, y, R, y);
+  });
+  ensure(30); y += 6;
+  const tl = (label, v, bold) => { doc.setFont('helvetica', bold ? 'bold' : 'normal'); doc.setFontSize(bold ? 11 : 9.5); doc.setTextColor(26,26,26); doc.text(label, 150, y, {align:'right'}); doc.text(pm(v), cols.amt, y, {align:'right'}); y += bold ? 7 : 5.5; };
+  tl('Subtotal', t.sub);
+  if (s.vatRegistered && q.vat) tl('VAT 15%', t.vat);
+  doc.setDrawColor(...AC); doc.setLineWidth(0.8); doc.line(120, y - 2.5, R, y - 2.5); y += 3;
+  tl('Total', t.total, true);
+  if (!s.vatRegistered){ doc.setFont('helvetica','italic'); doc.setFontSize(8); doc.setTextColor(102,102,102); doc.text(`${s.name} is not a registered VAT vendor. No VAT is charged.`, cols.amt, y, {align:'right'}); y += 6; }
+  const block = (title, text) => {
+    if (!text) return;
+    const lines = doc.splitTextToSize(text, R - L);
+    ensure(10 + lines.length * 4.2);
+    y += 4; doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(26,26,26); doc.text(title, L, y); y += 5;
+    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(51,51,51);
+    lines.forEach(l => { ensure(5); doc.text(l, L, y); y += 4.2; });
+  };
+  block('Scope and assumptions', q.notes);
+  block('Payment terms', s.paymentTerms);
+  const bank = [s.bankName && 'Bank: ' + s.bankName, s.accountName && 'Account name: ' + s.accountName, s.accountNo && 'Account number: ' + s.accountNo, s.branchCode && 'Branch code: ' + s.branchCode, 'Reference: ' + q.number].filter(Boolean);
+  if (bank.length > 1) block('Banking details', bank.join('\n'));
+  block('Terms', q.terms);
+  const pages = doc.getNumberOfPages();
+  for (let p = 1; p <= pages; p++){
+    doc.setPage(p); doc.setDrawColor(224,224,224); doc.setLineWidth(0.2); doc.line(L, 284, R, 284);
+    doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(120,120,120);
+    doc.text([s.name, s.website, s.publicEmail || s.mailAddress].filter(Boolean).join('  |  '), L, 289); doc.text(`Page ${p} of ${pages}`, R, 289, {align:'right'});
+  }
+  return doc;
+}
+function quoteEmail(q){
+  const s = S(), t = quoteTotals(q), client = q.client ? get('clients', q.client) : null;
+  const greet = q.contactName ? `Dear ${q.contactName.split(' ')[0]},` : 'Good day,';
+  const rows = q.items.filter(it => it.desc).map(it => `<tr><td style="padding:8px;border-bottom:1px solid #e0e0e0">${esc(it.desc)}</td><td style="padding:8px;border-bottom:1px solid #e0e0e0;text-align:right;white-space:nowrap">${esc(it.qty)} ${esc(it.unit)}</td><td style="padding:8px;border-bottom:1px solid #e0e0e0;text-align:right;white-space:nowrap">${esc(money((+it.qty||0)*(+it.rate||0)))}</td></tr>`).join('');
+  const AH = C().accentHex, tot = (l, v, b) => `<tr><td></td><td style="padding:6px 8px;text-align:right;${b ? 'font-weight:bold;border-top:2px solid ' + AH : ''}">${l}</td><td style="padding:6px 8px;text-align:right;white-space:nowrap;${b ? 'font-weight:bold;border-top:2px solid ' + AH : ''}">${esc(money(v))}</td></tr>`;
+  const htmlBody = `<div style="font-family:Arial,Helvetica,sans-serif;color:#333;font-size:14px;line-height:1.5;max-width:640px">
+<div style="background:${C().darkHex};padding:18px 22px;border-bottom:3px solid ${C().accentHex}"><div style="color:#fff;font-size:18px;font-weight:bold">${esc(s.name)}</div><div style="color:#cbd5e1;font-size:12px">Quotation ${esc(q.number)}</div></div>
+<div style="padding:20px 22px">
+<p>${esc(greet)}</p>
+<p>Thank you for the opportunity. Please find attached our quotation ${esc(q.number)} for ${esc(q.title || 'the work discussed')}${client ? ' for ' + esc(client.name) : ''}. A summary is below.</p>
+<table style="width:100%;border-collapse:collapse;font-size:13px"><tr style="background:#f5f5f5"><th style="padding:8px;text-align:left">Item</th><th style="padding:8px;text-align:right">Qty</th><th style="padding:8px;text-align:right">Amount</th></tr>${rows}
+${tot('Subtotal', t.sub)}${s.vatRegistered && q.vat ? tot('VAT 15%', t.vat) : ''}${tot('Total', t.total, true)}</table>
+<p>This quotation is valid until ${esc(fmtDate(q.validUntil))}. ${esc(s.paymentTerms || '')}</p>
+<p>Reply to this email if you have any questions or would like to go ahead.</p>
+<p style="margin:0">${esc(s.signoff || '')}</p>${window.HUB_M365 ? '' : signatureHtml()}</div></div>`;
+  const body = `${greet}\n\nThank you for the opportunity. Please find attached our quotation ${q.number} for ${q.title || 'the work discussed'}.\n\nTotal: ${money(t.total)}${s.vatRegistered && q.vat ? ' (incl. VAT)' : ''}\nValid until: ${fmtDate(q.validUntil)}\n${s.paymentTerms || ''}\n\nReply to this email if you have any questions or would like to go ahead.\n\n${s.signoff ? s.signoff + '\n' : ''}${window.HUB_M365 ? '' : signatureText()}`;
+  return {subject: `Quotation ${q.number}: ${q.title || s.name}`, htmlBody, body};
+}
+async function quoteAction(kind, btn){
+  if (kind === 'send' && !btn.classList.contains('armed')){ btn.classList.add('armed'); btn.textContent = 'Confirm send'; return; }
+  const q = await persistQuote(); if (!q) return;
+  if (kind === 'pdf'){
+    try {
+      const doc = await quotePdf(q), blob = doc.output('blob');
+      if (DL){ await DL.save({filename: q.number + '.pdf', data: blob}); toast('Quote PDF saved'); }
+      else toast('Downloads are not available in this view.');
+    } catch(e){ if (e?.code !== 'declined') toast(e?.code === 'rate_limited' ? 'A download prompt is already open.' : "Couldn't create the PDF."); }
+    return;
+  }
+  const problem = quoteReady(q); if (problem){ toast(problem); return; }
+  btn.disabled = true;
+  try {
+    const doc = await quotePdf(q), b64 = doc.output('datauristring').split(',')[1];
+    const mail = quoteEmail(q), args = {to: emails(q.email), ...mail, attachments: [{content: b64, filename: q.number + '.pdf', mimeType: 'application/pdf'}]};
+    if (kind === 'draft'){
+      await MCP.callTool(GMAIL, 'create_draft', args);
+      toast('Quote saved to your Outlook drafts');
+    } else {
+      await MCP.callTool(GMAIL, 'send_message', args);
+      const {id: _x, ...rest} = q;
+      await saveItem('quotes', q.id, {...rest, status: 'Sent', sentAt: new Date().toISOString()});
+      qdlg().close(); toast('Quote sent');
+    }
+  } catch(e){ toast(mcpMsg(e, kind === 'send')); }
+  finally { btn.disabled = false; }
+}
+async function quoteToInvoice(){
+  const q = await persistQuote(); if (!q) return;
+  const t = quoteTotals(q);
+  try {
+    const inv = await saveItem('invoices', null, {number: nextInvoiceNo(), client: q.client || '', project: q.project || '', amount: t.sub, vat: !!(q.vat && S().vatRegistered), status: 'Draft', issued: today(), due: addDays(today(), 30), paidOn: '', notes: `From quote ${q.number}: ${q.title || ''}`});
+    const {id: _x, ...rest} = q;
+    await saveItem('quotes', q.id, {...rest, invoice: inv});
+    qdlg().close(); toast('Invoice created from quote'); go('invoices');
+  } catch(e){ writeError(e); }
+}
+
+/* ---------- mail (Gmail connector) ---------- */
+const GMAIL = 'Gmail';
+let MCP = null, SAMPLE = null, DL = null, CAPS_READY = false;
+const MAIL = {view: 'ryno', q: '', threads: null, error: null, storedAt: 0, key: '', unsub: null, next: null};
+let THREAD = {id: null};
+function mcpMsg(e, isWrite){
+  switch (e?.code){
+    case 'needs_reauth': return 'Gmail needs reconnecting. Reconnect it in claude.ai Settings, Connectors, then reload the hub.';
+    case 'server_not_connected': case 'server_not_found': return 'Gmail isn’t connected to your Claude account. Add it in claude.ai Settings, Connectors.';
+    case 'selection_required': return 'Choose which Gmail account the hub should use in the prompt Claude shows, then try again.';
+    case 'not_in_manifest': return 'Gmail is turned off for this page. Allow it from the page’s Permissions menu.';
+    case 'blocked_by_policy': case 'approval_required': return 'Your organisation’s policy blocks this Gmail action here.';
+    case 'tool_error': return 'Gmail refused: ' + (e.message || 'unknown error');
+    case 'cancelled': return 'Cancelled.';
+    case 'not_granted': case 'capability_disabled': case 'capability_removed': return 'Mail isn’t available in this view. Open the hub inside Claude.';
+    case 'server_unavailable': case 'upstream_error': case 'rate_limited':
+      return isWrite ? 'Outlook didn’t confirm. Check your Sent Items in Outlook before trying again.' : 'Outlook didn’t respond. Try again in a moment.';
+    default: return e?.message || 'Something went wrong with Gmail.';
+  }
+}
+const addrOf = s => ((String(s || '').match(/<([^>]+)>/) || [])[1] || String(s || '')).trim().toLowerCase();
+const nameOf = s => { const m = String(s || '').match(/^\s*"?([^"<]+?)"?\s*</); return m ? m[1].trim() : addrOf(s); };
+const FREE_MAIL = /@(gmail|googlemail|outlook|hotmail|live|yahoo|icloud|me|aol|proton|protonmail|mweb|telkomsa|vodamail|webmail|lantic)\./i;
+function clientFor(addr){
+  if (!addr) return null;
+  const a = addr.toLowerCase();
+  let c = D.clients.find(c => emails(c.email).map(x => x.toLowerCase()).includes(a));
+  if (!c && !FREE_MAIL.test(a)){ const dom = a.split('@')[1]; c = D.clients.find(c => emails(c.email).some(x => x.toLowerCase().endsWith('@' + dom))); }
+  return c || null;
+}
+const authUser = url => decodeURIComponent((String(url || '').match(/authuser=([^&#]+)/) || [])[1] || '');
+function mailQuery(){
+  const a = S().mailAddress;
+  if (MAIL.view === 'ryno' && !a) return ('in:inbox ' + MAIL.q).trim();
+  const pe = S().publicEmail, base = MAIL.view === 'ryno' ? `(to:${a} OR cc:${a} OR deliveredto:${a} OR from:${a}${pe ? ` OR to:${pe} OR deliveredto:${pe}` : ''})` : MAIL.view === 'sent' ? 'in:sent' : 'in:inbox';
+  return (base + ' ' + MAIL.q).trim();
+}
+function startMailWatch(){
+  if (!MCP) return;
+  const query = mailQuery();
+  if (MAIL.unsub && MAIL.key === query) return;
+  if (MAIL.unsub) MAIL.unsub();
+  MAIL.key = query; MAIL.threads = null; MAIL.error = null;
+  let last = '';
+  MAIL.unsub = MCP.watchTool(GMAIL, 'search_threads', {query, pageSize: 30, view: 'THREAD_VIEW_MINIMAL'}, ev => {
+    if (ev.type === 'data'){
+      const p = ev.result.payload && typeof ev.result.payload === 'object' ? ev.result.payload : {};
+      const threads = Array.isArray(p.threads) ? p.threads : [];
+      const sig = JSON.stringify(threads.map(t => [t.id, t.messageCount, (t.messages || []).map(m => m.labelIds)]));
+      MAIL.storedAt = ev.result.cache?.storedAt || Date.now();
+      MAIL.error = null;
+      if (sig !== last || MAIL.threads === null){ last = sig; MAIL.threads = threads; if (route().page === 'mail') render(); }
+    } else {
+      MAIL.error = ev.error;
+      if (['needs_reauth','server_not_connected','blocked_by_policy','approval_required','not_in_manifest','not_granted','capability_disabled','capability_removed','selection_required'].includes(ev.error?.code)) MAIL.threads = null;
+      if (route().page === 'mail') render();
+    }
+  }, {refetchInterval: 120000, cache: {staleTime: 30000}});
+}
+async function fetchThread(id, fresh){
+  THREAD = {...THREAD, id, loading: true, error: null, data: fresh ? THREAD.data : null};
+  try {
+    const r = await MCP.callTool(GMAIL, 'get_thread', {threadId: id, messageFormat: 'PLAIN_TEXT'}, {cache: fresh ? {refresh: true, staleTime: 60000} : {staleTime: 60000}});
+    if (THREAD.id !== id) return;
+    THREAD.data = r.payload && typeof r.payload === 'object' ? r.payload : null; THREAD.loading = false;
+  } catch(e){ if (THREAD.id !== id) return; THREAD.error = e; THREAD.loading = false; }
+  render();
+}
+const mailDate = s => { if (!s) return ''; const d = new Date(s), now = new Date(); return d.toDateString() === now.toDateString() ? d.toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'}) : d.toLocaleDateString('en-ZA',{day:'numeric',month:'short', year: d.getFullYear() === now.getFullYear() ? undefined : 'numeric'}); };
+function setupNote(){
+  if (window.HUB_M365) return '';
+  const a = esc(S().mailAddress);
+  return `<details class="note-box"><summary>No mail for ${a} yet? Set up forwarding</summary>
+  ${CO === 'llp' ? `<ol><li>In the Microsoft 365 admin centre, open the mailbox for <b>${a}</b> and turn on forwarding to the Gmail account connected to Claude, keeping a copy in the mailbox.</li>
+  <li>In Gmail, go to Settings, Accounts and Import, Send mail as, and add <b>${a}</b> using SMTP server smtp.office365.com, port 587, with your Microsoft 365 password.</li>` : `<ol><li>Since 12 Nov 2026 mail to <b>${a}</b> arrives in Outlook (Microsoft 365). To see it here too, turn on forwarding to the Gmail account connected to Claude in Outlook, Settings, Mail, Forwarding, keeping a copy.</li>
+  <li>Sending still goes through Gmail's Send mail as for <b>${a}</b> (SMTP server mail.ryno-tec.co.za).</li>`}
+  <li>Make ${a} the default Send mail as address, so the hub's replies and quotes go out from it.</li></ol></details>`;
+}
+function renderMail(id){
+  if (!CAPS_READY) return `<header class="page-head"><div><h1>Mail</h1></div></header><div class="empty"><p>Connecting to Gmail…</p></div>`;
+  if (!MCP) return `<header class="page-head"><div><h1>Mail</h1><p class="sub">Read, answer and send your business email from the hub.</p></div></header>
+    <div class="empty"><p>Mail works when the hub is open inside Claude with Gmail connected. Open the hub from your Claude artifacts.</p></div>`;
+  if (id) return renderThread(id);
+  if (MAIL.view === 'ryno' && !S().mailAddress) return `<header class="page-head"><div><h1>Mail</h1><p class="sub">Read, answer and send ${esc(C().short)}'s business email from the hub.</p></div></header>
+    <div class="empty"><p>Add ${esc(C().short)}'s business email address in Business details, so the hub knows which mail belongs to this company.</p><button class="btn primary" data-edit-settings>Add business email</button> <button class="btn" data-mview="inbox">Show Gmail inbox</button></div>`;
+  startMailWatch();
+  const views = [['ryno', S().mailAddress || 'Business mail'], ['inbox', 'Inbox'], ['sent', 'Sent']];
+  let list;
+  if (MAIL.error && MAIL.threads === null) list = `<div class="empty"><p>${esc(mcpMsg(MAIL.error))}</p>${MAIL.error.code === 'not_in_manifest' ? '<button class="btn" data-perm>Open permissions</button>' : ''}</div>`;
+  else if (MAIL.threads === null) list = `<div class="empty"><p>Loading mail…</p></div>`;
+  else if (!MAIL.threads.length) list = `<div class="empty"><p>${MAIL.q ? 'No mail matches that search.' : MAIL.view === 'ryno' ? 'No mail to or from ' + esc(S().mailAddress) + ' in Outlook yet.' : 'Nothing here.'}</p></div>${MAIL.view === 'ryno' && !MAIL.q ? setupNote() : ''}`;
+  else list = `<ul class="maillist">${MAIL.threads.map(t => {
+      const ms = t.messages || [], first = ms[0] || {}, lastM = ms[ms.length - 1] || first;
+      const unread = ms.some(m => (m.labelIds || []).includes('UNREAD'));
+      const who = MAIL.view === 'sent' ? 'To: ' + (first.toRecipients || []).map(addrOf).join(', ') : nameOf(first.sender);
+      const c = clientFor(addrOf(MAIL.view === 'sent' ? (first.toRecipients || [])[0] : first.sender));
+      return `<li><a href="#/mail/${esc(t.id)}" class="${unread ? 'unread' : ''}"><span class="who">${esc(who)}${t.messageCount > 1 ? ` <i>${t.messageCount}</i>` : ''}</span>
+        <span class="what"><b>${esc(first.subject || '(no subject)')}</b>${c ? `<span class="cchip">${esc(c.name)}</span>` : ''}<span class="snip">${esc(lastM.snippet || first.snippet || '')}</span></span>
+        <span class="when">${esc(mailDate(lastM.date || first.date))}</span></a></li>`; }).join('')}</ul>`;
+  const stale = MAIL.error && MAIL.threads ? `<p class="sub warn-text">${esc(mcpMsg(MAIL.error))} Showing mail from ${esc(mailDate(new Date(MAIL.storedAt).toISOString()))}.</p>` : '';
+  return `<header class="page-head"><div><h1>Mail</h1><p class="sub">Your business mail in Outlook. Replies and new mail go out from your Outlook mailbox.</p>${stale}</div>
+    <button class="btn primary" data-compose>New email</button></header>
+  <div class="toolbar"><form data-mailsearch class="msearch"><input type="search" id="mailQ" placeholder="Search mail" aria-label="Search mail" value="${esc(MAIL.q)}"></form>
+    <div class="chips" role="group" aria-label="Mailbox">${views.map(([v,l]) => `<button class="chip" data-mview="${v}" aria-pressed="${MAIL.view===v}">${esc(l)}</button>`).join('')}</div>
+    <button class="btn small" data-mrefresh>Refresh</button></div>
+  ${list}`;
+}
+function threadParts(){
+  const t = THREAD.data || {}, ms = Array.isArray(t.messages) ? t.messages : [];
+  const mine = [S().mailAddress.toLowerCase(), authUser(t.viewUrl).toLowerCase()].filter(Boolean);
+  const theirs = [...ms].reverse().find(m => !mine.includes(addrOf(m.sender))) || ms[ms.length - 1];
+  return {t, ms, theirs, mine};
+}
+function renderThread(id){
+  if (THREAD.id !== id){ THREAD = {id, reply: '', replyAll: false}; fetchThread(id); }
+  const back = `<p class="crumb"><a href="#/mail">Mail</a></p>`;
+  if (THREAD.error && !THREAD.data) return back + `<div class="empty"><p>${esc(mcpMsg(THREAD.error))}</p><button class="btn" data-treload>Try again</button></div>`;
+  if (!THREAD.data) return back + `<div class="empty"><p>Opening conversation…</p></div>`;
+  const {t, ms, theirs} = threadParts();
+  const subj = (ms[0] && ms[0].subject) || '(no subject)';
+  const addr = addrOf(theirs?.sender), c = clientFor(addr);
+  const pre = {client: c?.id || '', email: addr, contactName: nameOf(theirs?.sender) !== addr ? nameOf(theirs?.sender) : '', title: subj.replace(/^((re|fw|fwd)\s*:\s*)+/i, '')};
+  const msgs = ms.map((m, i) => {
+    const body = String(m.plaintextBody || m.snippet || '');
+    const long = body.length > 3500;
+    return `<article class="msg"><header><div><b>${esc(nameOf(m.sender))}</b> <span class="muted">${esc(addrOf(m.sender))}</span><div class="muted small">To ${esc((m.toRecipients || []).join(', '))}${(m.ccRecipients || []).length ? ', cc ' + esc(m.ccRecipients.join(', ')) : ''}</div></div><span class="muted small">${esc(new Date(m.date).toLocaleString('en-ZA',{dateStyle:'medium',timeStyle:'short'}))}</span></header>
+      ${long && i < ms.length - 1 ? `<details><summary>Show message</summary><div class="mbody">${esc(body)}</div></details>` : `<div class="mbody ${long ? 'clip' : ''}">${esc(long ? body.slice(0, 3500) + '\n…' : body)}</div>`}
+      ${(m.attachments || []).length ? `<p class="muted small">${m.attachments.length} attachment${m.attachments.length > 1 ? 's' : ''}, open in Outlook to view</p>` : ''}</article>`;
+  }).join('');
+  return back + `<header class="page-head"><div><h1>${esc(subj)}</h1><p class="sub">${c ? `Client: <button type="button" class="link" data-open="clients:${c.id}">${esc(c.name)}</button>` : `${esc(addr)} is not a client yet.`}</p></div>
+    <div class="row-btns">${c ? '' : `<button class="btn" data-addclient='${esc(JSON.stringify({name: (pre.contactName || addr.split('@')[1] || addr), email: addr, status: 'Prospect'}))}'>Add as client</button>`}
+    <button class="btn" data-newquote='${esc(JSON.stringify(pre))}'>Create quote</button>
+    ${(() => { const a = RAW.archive.find(x => x.threadId === id); return a ? (coOf(a) === CO ? `<button class="btn" data-open="archive:${esc(a.id)}">Archived ✓</button>` : '<span class="btn" aria-disabled="true">Archived ✓</span>') : '<button class="btn" data-archivethread>Archive to hub</button>'; })()}
+    ${t.viewUrl ? `<a class="btn" href="${esc(t.viewUrl)}" target="_blank" rel="noopener">Open in Outlook</a>` : ''}</div></header>
+  <div class="thread">${msgs}</div>
+  <section class="reply"><h2>Reply to ${esc(nameOf(theirs?.sender))}</h2>
+    <textarea id="replyBody" rows="9" placeholder="Write your reply">${esc(THREAD.reply || '')}</textarea>
+    <div class="reply-foot"><label class="inline"><input type="checkbox" id="replyAll" ${THREAD.replyAll ? 'checked' : ''}> Reply all</label>
+      <span class="spacer"></span>
+      ${SAMPLE ? '<button type="button" class="btn" data-aidraft>Draft with Claude</button>' : ''}
+      <button type="button" class="btn" data-rdraft>Save as Outlook draft</button>
+      <button type="button" class="btn primary" data-rsend>Send reply</button></div>
+    <div class="reply-sig"><label class="inline"><input type="checkbox" id="replySig" ${THREAD.noSig ? '' : 'checked'}> Add my signature</label><details class="sigbox"><summary>Preview</summary>${sigPreview()}</details></div>
+    <p class="muted small">Goes out from your Outlook mailbox. End your reply with your sign-off; the signature is added below it.</p></section>`;
+}
+async function archiveThread(btn){
+  const {t, ms} = threadParts(); if (!ms.length) return;
+  const first = ms[0];
+  const text = ms.map(m => `From: ${m.sender || ''}\nDate: ${new Date(m.date).toLocaleString('en-ZA',{dateStyle:'medium',timeStyle:'short'})}\n\n${String(m.plaintextBody || m.snippet || '').trim()}`).join('\n\n----------\n\n').slice(0, 60000);
+  const att = ms.flatMap(m => (m.attachments || []).map(a => a.filename || a.name || a.fileName)).filter(Boolean);
+  const rec = {subject: first.subject || '(no subject)', from: first.sender || '', received: toLocalDT(first.date), category: guessCat(first.sender, first.subject),
+    reference: '', file: null, gmailUrl: t.viewUrl || '', body: text,
+    notes: att.length ? 'Attachments are on the email: ' + att.join(', ') + '. Ask Claude to copy them into the hub.' : '', threadId: THREAD.id, gmailId: first.id || '', attachments: []};
+  btn.disabled = true;
+  try { await saveItem('archive', null, rec); toast('Archived to the hub'); render(); }
+  catch(e){ writeError(e); btn.disabled = false; }
+}
+async function sendReply(kind, btn){
+  const body = ($('#replyBody')?.value || '').trim();
+  if (!body){ toast('Write a reply first.'); return; }
+  const {ms, theirs} = threadParts();
+  if (!theirs){ toast('There is no message to reply to.'); return; }
+  if (kind === 'send' && !btn.classList.contains('armed')){ btn.classList.add('armed'); btn.textContent = 'Confirm send'; return; }
+  btn.disabled = true;
+  try {
+    if (kind === 'send'){
+      await MCP.callTool(GMAIL, 'reply', {messageId: theirs.id, ...withSignature(body, $('#replySig')?.checked !== false), replyAll: !!$('#replyAll')?.checked});
+      THREAD.reply = ''; toast('Reply sent'); fetchThread(THREAD.id, true);
+    } else {
+      const subj = (ms[0] && ms[0].subject) || '';
+      await MCP.callTool(GMAIL, 'create_draft', {to: [addrOf(theirs.sender)], subject: /^re:/i.test(subj) ? subj : 'Re: ' + subj, ...withSignature(body, $('#replySig')?.checked !== false), replyToMessageId: theirs.id});
+      toast('Reply saved to your Outlook drafts');
+    }
+  } catch(e){ toast(mcpMsg(e, kind === 'send')); btn.classList.remove('armed'); btn.textContent = kind === 'send' ? 'Send reply' : 'Save as Outlook draft'; }
+  finally { btn.disabled = false; }
+}
+let AI_ABORT = null;
+async function aiDraft(btn){
+  if (AI_ABORT){ AI_ABORT.abort(); return; }
+  const ta = $('#replyBody'); if (!ta) return;
+  const notes = ta.value.trim(), s = S();
+  const {ms, theirs} = threadParts();
+  const c = clientFor(addrOf(theirs?.sender));
+  const ctx = [];
+  if (c){
+    ctx.push(`Client: ${c.name}${c.industry ? ' (' + c.industry + ')' : ''}, status ${c.status || 'Prospect'}${c.notes ? '. Notes: ' + c.notes : ''}`);
+    D.deals.filter(d => d.client === c.id && !['Won','Lost'].includes(d.stage)).forEach(d => ctx.push(`Open deal: ${d.title}, stage ${d.stage}${d.value ? ', value ' + money(d.value) : ''}`));
+    D.quotes.filter(q => q.client === c.id).forEach(q => ctx.push(`Quote ${q.number}: ${q.title || ''}, ${money(quoteTotals(q).total)}, status ${quoteStatus(q)}, valid until ${q.validUntil}`));
+    D.projects.filter(p => p.client === c.id && p.status !== 'Complete').forEach(p => ctx.push(`Project: ${p.name}, status ${p.status}`));
+  }
+  let budget = 12000;
+  const thread = ms.map(m => { const b = String(m.plaintextBody || m.snippet || '').slice(0, Math.min(3000, Math.max(0, budget))); budget -= b.length; return `From: ${m.sender}\nDate: ${m.date}\nSubject: ${m.subject || ''}\n\n${b}`; }).join('\n\n---\n\n');
+  const prompt = `You draft email replies for Kagiso Tshukudu, ${s.sigTitle ? s.sigTitle.toLowerCase() : 'founder'} of ${s.name}, ${C().about}.
+Write only the body of a reply to the most recent message from ${theirs ? theirs.sender : 'the other party'}. Plain text, no subject line, no markdown. Be concise, professional and warm, in South African English.
+Do not invent prices, dates, availability or commitments that are not in the context or Kagiso's notes. If something must be confirmed, say Kagiso will confirm it.
+End with the sign-off "${s.signoff || 'Kind regards,'}" on its own line and nothing after it; Kagiso's full signature is added automatically.
+
+Business hub context (may be empty):
+${ctx.join('\n') || 'None'}
+
+Kagiso's notes for this reply (may be empty):
+${notes || 'None'}
+
+Email thread, oldest first:
+${thread}`;
+  AI_ABORT = new AbortController();
+  btn.textContent = 'Stop'; ta.setAttribute('aria-busy', 'true');
+  try {
+    const r = await SAMPLE(prompt, {signal: AI_ABORT.signal, cache: false, onText: ({text}) => { ta.value = text; THREAD.reply = text; }});
+    ta.value = r.text.trim(); THREAD.reply = ta.value;
+  } catch(e){
+    if (e?.text) { ta.value = e.text; THREAD.reply = e.text; }
+    if (e?.code === 'not_granted'){ SAMPLE = null; render(); }
+    toast(e?.code === 'cancelled' ? 'Stopped' : e?.code === 'rate_limited' ? 'Claude is busy. Try again in a moment.' : e?.code === 'not_granted' ? 'Claude drafting is turned off for this page.' : "Couldn't draft a reply. Try again.");
+  } finally { AI_ABORT = null; btn.textContent = 'Draft with Claude'; ta.removeAttribute('aria-busy'); }
+}
+const mdlg = () => $('#mdlg'), mform = () => $('#mForm');
+let COMPOSE_PACK = null;
+function openCompose(pre){
+  if (!MCP){ toast('Mail works when the hub is open inside Claude with Gmail connected.'); return; }
+  COMPOSE_PACK = pre && pre.pack ? pre.pack : null;
+  const s = S(), p = {to: '', cc: '', subject: '', body: '\n\n' + (s.signoff || ''), ...(pre || {})};
+  const opts = D.clients.flatMap(c => emails(c.email).map(e => `<option value="${esc(e)}">${esc(c.name)}</option>`)).join('');
+  mform().innerHTML = `<div class="dhead"><h2>New email</h2><button type="button" class="x" data-mclose aria-label="Close">×</button></div>
+  <div class="fields">
+    <div class="f wide"><label for="m_to">To <i aria-hidden="true">*</i></label><input id="m_to" name="to" list="clientMails" value="${esc(p.to)}" required placeholder="name@company.co.za"><datalist id="clientMails">${opts}</datalist><span class="hint">Separate several addresses with commas</span></div>
+    <div class="f wide"><label for="m_cc">Cc</label><input id="m_cc" name="cc" value="${esc(p.cc)}"></div>
+    <div class="f wide"><label for="m_subject">Subject <i aria-hidden="true">*</i></label><input id="m_subject" name="subject" value="${esc(p.subject)}" required></div>
+    <div class="f wide"><label for="m_body">Message</label><textarea id="m_body" name="body" rows="12">${esc(p.body)}</textarea></div>
+    <div class="f wide check sigline"><input type="checkbox" id="m_sig" checked><label for="m_sig">Add my signature</label></div>
+    <div class="f wide">${sigPreview()}</div>
+    ${COMPOSE_PACK ? `<div class="f wide"><label>Attachments</label><span class="hint">${COMPOSE_PACK.map(id => esc(fileOf(get('compliance', id))?.name || get('compliance', id)?.doc || '')).join(', ')}</span></div>` : ''}
+  </div>
+  <div class="dfoot"><span class="meta">Sends from your Outlook mailbox.</span><span class="spacer"></span><button type="button" class="btn" data-mclose>Cancel</button><button type="button" class="btn" data-mdraft>Save as Outlook draft</button><button type="button" class="btn primary" data-msend>Send</button></div>`;
+  if (!mdlg().open) mdlg().showModal();
+  ($('#m_to').value ? $('#m_subject').value ? $('#m_body') : $('#m_subject') : $('#m_to')).focus();
+}
+async function composeAction(kind, btn){
+  const f = mform(), to = emails(f.to.value), cc = emails(f.cc.value), subject = f.subject.value.trim(), body = f.body.value;
+  if (!to.length){ toast('Add at least one valid email address.'); f.to.focus(); return; }
+  if (!subject){ toast('Add a subject.'); f.subject.focus(); return; }
+  if (kind === 'send' && !btn.classList.contains('armed')){ btn.classList.add('armed'); btn.textContent = 'Confirm send'; return; }
+  btn.disabled = true;
+  try {
+    const args = {to, subject, ...withSignature(body, $('#m_sig')?.checked !== false)}; if (cc.length) args.cc = cc;
+    if (COMPOSE_PACK) args.attachments = await packAttachments(COMPOSE_PACK);
+    await MCP.callTool(GMAIL, kind === 'send' ? 'send_message' : 'create_draft', args);
+    mdlg().close(); toast(kind === 'send' ? 'Email sent' : 'Saved to your Outlook drafts');
+    if (kind === 'send' && MCP.invalidate) MCP.invalidate(GMAIL, 'search_threads').catch(() => {});
+  } catch(e){ toast(e?.code === 'file_missing' ? e.message + '. Re-upload it in the Compliance pack.' : mcpMsg(e, kind === 'send')); btn.classList.remove('armed'); btn.textContent = kind === 'send' ? 'Send' : 'Save as Outlook draft'; }
+  finally { btn.disabled = false; }
+}
+
+/* ---------- module events ---------- */
+function bindModule(){
+  sform().addEventListener('submit', async e => {
+    e.preventDefault();
+    const f = sform(); if (!f.checkValidity()){ f.reportValidity(); return; }
+    const fd = new FormData(f), body = {};
+    SETTING_FIELDS.forEach(x => {
+      if (x.t === 'bool') body[x.k] = f.querySelector(`[name="${x.k}"]`).checked;
+      else if (x.t === 'number'){ const v = fd.get(x.k); body[x.k] = v === '' ? null : +v; }
+      else body[x.k] = (fd.get(x.k) || '').toString().trim();
+    });
+    try { await saveSettings(body); sdlg().close(); toast('Business details saved'); } catch(err){ writeError(err); }
+  });
+  sform().addEventListener('click', e => { if (e.target.closest('[data-sclose]')) sdlg().close(); });
+
+  qform().addEventListener('input', e => {
+    const tr = e.target.closest('tr[data-i]'), k = e.target.dataset.qf;
+    if (tr && k){ const it = QED.q.items[+tr.dataset.i]; it[k] = e.target.value; if (k === 'desc'){ e.target.style.height = 'auto'; e.target.style.height = e.target.scrollHeight + 'px'; } tr.querySelector('[data-amt]').textContent = money((+it.qty || 0) * (+it.rate || 0)); drawQTot(); }
+  });
+  qform().addEventListener('change', e => {
+    if (e.target.id === 'q_vat') drawQTot();
+    if (e.target.name === 'client'){ const c = get('clients', e.target.value); if (c){ const f = qform(); if (!f.email.value) f.email.value = emails(c.email).join(', '); if (!f.contactName.value && c.contact) f.contactName.value = c.contact; } }
+  });
+  qform().addEventListener('submit', async e => {
+    e.preventDefault();
+    try { const q = await persistQuote(); if (q){ qdlg().close(); toast('Quote saved'); } } catch(err){ writeError(err); }
+  });
+  qform().addEventListener('click', async e => {
+    if (e.target.closest('[data-qclose]')) return qdlg().close();
+    if (e.target.closest('[data-qadd]')){ readQuote(); QED.q.items.push({desc:'', qty:1, unit:C().unit, rate:''}); drawQRows(); $('#qRows tr:last-child textarea')?.focus(); return; }
+    const rm = e.target.closest('[data-qrm]'); if (rm){ readQuote(); QED.q.items.splice(+rm.dataset.qrm, 1); drawQRows(); return; }
+    const a = e.target.closest('[data-qpdf],[data-qdraft],[data-qsend]');
+    if (a){ try { await quoteAction(a.dataset.qpdf !== undefined ? 'pdf' : a.dataset.qdraft !== undefined ? 'draft' : 'send', a); } catch(err){ writeError(err); } return; }
+    if (e.target.closest('[data-qinv]')) return quoteToInvoice();
+    const del = e.target.closest('[data-qdel]');
+    if (del){
+      if (!del.classList.contains('armed')){ del.classList.add('armed'); del.textContent = 'Confirm delete'; return; }
+      try { await deleteItem('quotes', QED.id); qdlg().close(); toast('Quote deleted'); } catch(err){ writeError(err); }
+    }
+  });
+
+  mform().addEventListener('submit', e => e.preventDefault());
+  mform().addEventListener('click', e => {
+    if (e.target.closest('[data-mclose]')) return mdlg().close();
+    const s = e.target.closest('[data-msend]'), d = e.target.closest('[data-mdraft]');
+    if (s) return composeAction('send', s);
+    if (d) return composeAction('draft', d);
+  });
+
+  document.addEventListener('click', e => {
+    if (e.target.closest('dialog')) return;
+    const t = e.target;
+    if (t.closest('[data-edit-settings]')) return openSettings();
+    if (t.closest('[data-copysig]')){
+      const html = signatureHtml(), txt = signatureText();
+      const done = () => toast('Signature copied. Paste it into Gmail Settings, General, Signature.');
+      const fallback = () => { const el = $('#sigCard'); const r = document.createRange(); r.selectNodeContents(el); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); try { document.execCommand('copy') ? done() : toast('Press Ctrl+C (or Cmd+C) to copy the selected signature.'); } catch(_){ toast('Press Ctrl+C (or Cmd+C) to copy the selected signature.'); } };
+      try { if (window.ClipboardItem && navigator.clipboard?.write) navigator.clipboard.write([new ClipboardItem({'text/html': new Blob([html], {type:'text/html'}), 'text/plain': new Blob([txt], {type:'text/plain'})})]).then(done, fallback); else fallback(); } catch(_){ fallback(); }
+      return;
+    }
+    if (t.closest('[data-compose]')) return openCompose();
+    const mv = t.closest('[data-mview]'); if (mv){ MAIL.view = mv.dataset.mview; startMailWatch(); return render(); }
+    if (t.closest('[data-mrefresh]')){ MAIL.key = ''; if (MCP?.invalidate) MCP.invalidate(GMAIL, 'search_threads').catch(() => {}); startMailWatch(); return render(); }
+    if (t.closest('[data-treload]')) return fetchThread(THREAD.id, true);
+    if (t.closest('[data-perm]')){ claude.use('permissions').then(p => p && p.manage()).catch(() => toast('Use the page’s Permissions menu to allow Gmail.')); return; }
+    const ac = t.closest('[data-addclient]'); if (ac){ let p = {}; try { p = JSON.parse(ac.dataset.addclient); } catch(_){} return openForm('clients', null, p); }
+    const at = t.closest('[data-archivethread]'); if (at) return archiveThread(at);
+    const nq = t.closest('[data-newquote]'); if (nq){ let p = {}; try { p = JSON.parse(nq.dataset.newquote); } catch(_){} if (!p.client) delete p.client; return openQuote(null, p); }
+    const ai = t.closest('[data-aidraft]'); if (ai) return aiDraft(ai);
+    const rs = t.closest('[data-rsend]'), rd = t.closest('[data-rdraft]');
+    if (rs) return sendReply('send', rs);
+    if (rd) return sendReply('draft', rd);
+  });
+  document.addEventListener('input', e => {
+    if (e.target.id === 'replyBody') THREAD.reply = e.target.value;
+  });
+  document.addEventListener('change', e => { if (e.target.id === 'replyAll') THREAD.replyAll = e.target.checked; if (e.target.id === 'replySig') THREAD.noSig = !e.target.checked; });
+  document.addEventListener('submit', e => {
+    const f = e.target.closest('[data-mailsearch]'); if (!f) return;
+    e.preventDefault(); MAIL.q = $('#mailQ').value.trim(); startMailWatch(); render();
+  });
+}
+
+/* ---------- public sector: supplier profile, documents, statutory deadlines ---------- */
+let ASSETS = null;
+const fileOf = c => { if (!c || !c.file) return null; if (typeof c.file === 'object') return c.file; try { return JSON.parse(c.file); } catch(_){ return null; } };
+const fileUrl = f => f && f.id ? '/_blob/' + f.id : '';
+const viewBtn = (f, label, cls) => f && f.id ? `<button type="button" class="${cls || 'btn small'}" data-viewfile="${esc(JSON.stringify({id: f.id, name: f.name || '', type: f.type || '', size: f.size || 0, ...(f.sp ? {sp: true, driveId: f.driveId, itemId: f.itemId} : {})}))}">${esc(label || 'Open')}</button>` : '';
+let VIEW = null, PDFJS = null;
+function loadPdfJs(){
+  if (PDFJS) return PDFJS;
+  PDFJS = new Promise((res, rej) => {
+    const sc = document.createElement('script');
+    sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    sc.onload = () => { const lib = window.pdfjsLib; if (!lib) return rej(new Error('PDF viewer did not load')); lib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; res(lib); };
+    sc.onerror = () => { PDFJS = null; rej(new Error('PDF viewer could not load. Use Save a copy to open the file.')); };
+    document.head.appendChild(sc);
+  });
+  return PDFJS;
+}
+async function renderPdf(blob, body, view){
+  const lib = await loadPdfJs();
+  const doc = await lib.getDocument({data: new Uint8Array(await blob.arrayBuffer())}).promise;
+  if (VIEW !== view) return;
+  body.innerHTML = '<div class="pages"></div>';
+  const wrap = body.firstChild, width = Math.min(body.clientWidth - 32, 900), dpr = Math.min(window.devicePixelRatio || 1, 2);
+  $('#viewerMeta').textContent = `${plural(doc.numPages, 'page')}${view.f.size ? ' · ' + kb(view.f.size) : ''}`;
+  for (let n = 1; n <= doc.numPages; n++){
+    if (VIEW !== view) return;
+    const page = await doc.getPage(n), base = page.getViewport({scale: 1}), vp = page.getViewport({scale: (width / base.width) * dpr});
+    const c = document.createElement('canvas'); c.width = vp.width; c.height = vp.height; c.style.width = (vp.width / dpr) + 'px';
+    c.setAttribute('role', 'img'); c.setAttribute('aria-label', `Page ${n} of ${doc.numPages}`);
+    wrap.appendChild(c);
+    await page.render({canvasContext: c.getContext('2d'), viewport: vp}).promise;
+  }
+}
+async function viewFile(f){
+  const dlg = $('#viewer'), body = $('#viewerBody');
+  if (VIEW && VIEW.url) URL.revokeObjectURL(VIEW.url);
+  VIEW = {f, blob: null, url: ''};
+  $('#viewerTitle').textContent = f.name || 'Document';
+  $('#viewerMeta').textContent = f.size ? kb(f.size) : '';
+  body.innerHTML = '<p>Loading…</p>';
+  if (!dlg.open) dlg.showModal();
+  try {
+    const r = await (f.sp && window.fetchHubFile ? fetchHubFile(f) : fetch(fileUrl(f)));
+    if (!r.ok) throw new Error(r.status === 404 ? 'This file is no longer stored in the hub. Upload it again on the document.' : 'The file could not be loaded (' + r.status + ').');
+    const blob = await r.blob(), type = f.type || blob.type || '';
+    VIEW.blob = blob; VIEW.url = URL.createObjectURL(type ? new Blob([blob], {type}) : blob);
+    if (type.startsWith('image/')) body.innerHTML = `<img src="${VIEW.url}" alt="${esc(f.name || 'Document')}">`;
+    else if (type === 'application/pdf') await renderPdf(blob, body, VIEW);
+    else body.innerHTML = '<p>No preview for this file type. Use Save a copy to open it.</p>';
+  } catch(e){ body.innerHTML = `<p>${esc(e.message || 'The file could not be loaded.')}</p>`; }
+}
+async function saveViewed(){
+  if (!VIEW || !VIEW.blob){ toast('Wait for the file to load.'); return; }
+  if (!DL){ toast('Saving files needs the hub opened inside Claude.'); return; }
+  const name = /\.[a-z0-9]{2,5}$/i.test(VIEW.f.name || '') ? VIEW.f.name : (VIEW.f.name || 'document') + (VIEW.f.type === 'application/pdf' ? '.pdf' : '');
+  try { await DL.save({filename: name, data: VIEW.blob}); }
+  catch(e){ if (e && e.code !== 'declined') toast('Could not save the file.'); }
+}
+document.addEventListener('click', e => {
+  const v = e.target.closest('[data-viewfile]');
+  if (v){ e.preventDefault(); e.stopPropagation(); try { viewFile(JSON.parse(v.dataset.viewfile)); } catch(_){} return; }
+  if (e.target.closest('[data-viewclose]')){ $('#viewer').close(); return; }
+  if (e.target.closest('#viewerSave')) saveViewed();
+}, true);
+(d => d && d.addEventListener('close', () => { if (VIEW && VIEW.url) URL.revokeObjectURL(VIEW.url); VIEW = null; $('#viewerBody').innerHTML = ''; }))($('#viewer'));
+const kb = n => n >= 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB';
+function latestDoc(name){
+  return D.compliance.filter(c => c.doc === name).sort((a, b) => (b.issued || '').localeCompare(a.issued || ''))[0] || null;
+}
+function nextOnOrAfter(month, day, from){
+  const y = +from.slice(0, 4);
+  for (const yy of [y, y + 1, y + 2]){
+    const last = new Date(yy, month, 0).getDate();
+    const d = `${yy}-${String(month).padStart(2, '0')}-${String(Math.min(day, last)).padStart(2, '0')}`;
+    if (d >= from) return d;
+  }
+  return '';
+}
+function statutory(){
+  const s = S(), reg = s.regDate, out = [], td = today();
+  if (!reg) return out;
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const fye = months.indexOf(s.yearEnd || 'October') + 1 || 10;
+  const officer = addDays(reg, 30);
+  if (!s.publicOfficer) out.push({t: 'Appoint a public officer with SARS', w: officer, n: 'Required within one month of starting business. Record the name in Business details once done.'});
+  const afterReg = addDays(reg, 1), anniv = nextOnOrAfter(+reg.slice(5, 7), +reg.slice(8, 10), td > afterReg ? td : afterReg);
+  if (anniv) out.push({t: 'CIPC annual return', w: anniv, n: 'Due on the registration anniversary; file within 30 business days on annualreturns.cipc.co.za. Missing it leads to deregistration.'});
+  const firstProv = addDays(reg.slice(0, 8) + '28', 4).slice(0, 8) + '01';
+  const pv = [nextOnOrAfter(fye > 6 ? fye - 6 : fye + 6, 31, td > firstProv ? td : firstProv), nextOnOrAfter(fye, 31, td > firstProv ? td : firstProv)].filter(Boolean).sort();
+  if (pv[0]) out.push({t: 'Provisional tax payment (IRP6)', w: pv[0], n: 'Two payments a year, six months into the tax year and at year end.'});
+  const firstFye = nextOnOrAfter(fye, 31, addDays(reg, 183)), afsFrom = addDays(firstFye, 1) > td ? addDays(firstFye, 1) : td;
+  const afs = nextOnOrAfter(fye > 6 ? fye - 6 : fye + 6, 31, afsFrom);
+  if (afs) out.push({t: 'Annual financial statements ready', w: afs, n: 'Within six months of the ' + (s.yearEnd || 'October') + ' year end; filed with the CIPC annual return.'});
+  const bee = latestDoc('B-BBEE affidavit or certificate');
+  if (bee && bee.expires) out.push({t: 'Renew B-BBEE certificate', w: bee.expires, n: 'Renew on CIPC BizPortal or with a sworn affidavit before it expires.'});
+  const tcs = latestDoc('Tax compliance status (TCS PIN)');
+  if (tcs && tcs.expires) out.push({t: 'Tax compliance status PIN expires', w: tcs.expires, n: 'Request a new PIN on eFiling.'});
+  return out.sort((a, b) => a.w.localeCompare(b.w));
+}
+function supplierText(){
+  const s = S(), bee = latestDoc('B-BBEE affidavit or certificate'), tcs = latestDoc('Tax compliance status (TCS PIN)'), csd = latestDoc('CSD registration');
+  return [
+    ['Registered name', s.legalName || s.name], ['Registration number', s.regNo], ['Registration date', s.regDate && fmtDate(s.regDate)],
+    ['Income tax reference', s.taxRef], ['VAT number', s.vatRegistered ? s.vatNo : 'Not a VAT vendor'],
+    ['CSD supplier number', s.csdNo || csd?.reference], ['Tax compliance PIN', tcs?.reference],
+    ['B-BBEE', bee ? `${bee.reference ? 'Certificate ' + bee.reference + ', ' : ''}${bee.notes ? bee.notes.split('.')[0] : 'see certificate'}${bee.expires ? ', valid until ' + fmtDate(bee.expires) : ''}` : ''],
+    ['Registered address', (s.address || '').replace(/\n/g, ', ')], ['Contact', [s.publicEmail || s.mailAddress, s.phone].filter(Boolean).join(', ')], ['Website', s.website]
+  ].filter(r => r[1]).map(r => r[0] + ': ' + r[1]).join('\n');
+}
+const PACK = new Set();
+function renderPublic(){
+  const s = S(), rows = statutory(), td = today();
+  const docs = [...D.compliance].sort(SCHEMA.compliance.sort);
+  const missing = CORE_DOCS.filter(d => !D.compliance.some(c => c.doc === d && docStatus(c) !== 'Expired'));
+  const prof = supplierText().split('\n').map(l => { const i = l.indexOf(': '); return `<dt>${esc(l.slice(0, i))}</dt><dd>${esc(l.slice(i + 2))}</dd>`; }).join('');
+  const sel = docs.filter(c => PACK.has(c.id) && fileOf(c));
+  const selBytes = sel.reduce((a, c) => a + (fileOf(c).size || 0), 0);
+  return `<header class="page-head"><div><h1>Public sector</h1><p class="sub">Your supplier profile, the documents procurement officers ask for, and the legal deadlines that keep you able to bid.</p></div>
+    <div class="row-btns"><button class="btn" data-copyprofile>Copy supplier details</button><button class="btn primary" data-go="tenders">Open tenders</button></div></header>
+  <div class="cols">
+    <div>
+      <section class="panel"><h2>Supplier profile</h2><dl class="money details">${prof}</dl>
+        ${missing.length ? `<p class="sub warn-text">Still needed for most tenders: ${esc(missing.join(', '))}.</p>` : ''}
+        <p class="muted small"><button class="link" data-edit-settings>Edit business details</button></p></section>
+      <section class="panel"><h2>Supplier documents</h2>
+        ${docs.length ? `<ul class="attn docs">${docs.map(c => { const f = fileOf(c), st = docStatus(c);
+          return `<li><label class="docrow">${f ? `<input type="checkbox" data-pack="${c.id}" ${PACK.has(c.id) ? 'checked' : ''} aria-label="Include ${esc(c.doc)}">` : '<span class="nofile"></span>'}
+            <span class="dname"><b>${esc(c.doc)}</b><span class="muted small">${esc(c.reference || '')}${c.expires ? ' · expires ' + esc(fmtDate(c.expires)) : ''}</span></span>
+            ${badge(st)}${f ? viewBtn(f, 'Open') : `<button class="btn small" data-open="compliance:${c.id}">${ASSETS ? 'Add file' : 'Edit'}</button>`}</label></li>`; }).join('')}</ul>
+          <div class="packbar"><span class="muted small">${sel.length ? `${plural(sel.length, 'document')} selected, ${kb(selBytes)}` : 'Tick documents to send them as a supplier pack.'}</span>
+          <span class="spacer"></span><button class="btn" data-add="compliance">Add document</button><button class="btn primary" data-sendpack ${sel.length ? '' : 'disabled'}>Email supplier pack</button></div>`
+          : empty('compliance', 'No documents yet. Add your CIPC certificate, tax PIN, CSD report and B-BBEE certificate.')}
+      </section>
+    </div>
+    <div>
+      <section class="panel"><h2>Legal deadlines</h2>${rows.length ? `<ul class="attn">${rows.map(r => { const d = daysUntil(r.w);
+        return `<li><div class="dl"><span class="tag ${d < 0 ? 'bad' : d <= 30 ? '' : 'ok'}"></span><span><b>${esc(r.t)}</b><span class="muted small">${esc(r.n)}</span></span><span class="why">${esc(fmtDate(r.w))}<br>${d < 0 ? `<span class="late">${plural(-d, 'day')} overdue</span>` : d === 0 ? 'today' : 'in ' + plural(d, 'day')}</span></div></li>`; }).join('')}</ul>`
+        : `<p class="muted">Add your registration date in <button class="link" data-edit-settings>Business details</button> to see CIPC and SARS deadlines.</p>`}
+        <p class="muted small">Dates are worked out from your registration date and ${esc(s.yearEnd || 'October')} year end. Confirm tax dates with your accountant.</p></section>
+    </div>
+  </div>`;
+}
+async function blobToB64(blob){
+  const buf = new Uint8Array(await blob.arrayBuffer());
+  let s = ''; for (let i = 0; i < buf.length; i += 0x8000) s += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000));
+  return btoa(s);
+}
+async function sendPack(){
+  const sel = [...D.compliance].filter(c => PACK.has(c.id) && fileOf(c));
+  if (!sel.length) return;
+  const bytes = sel.reduce((a, c) => a + (fileOf(c).size || 0), 0);
+  if (bytes > 3 * 1024 * 1024){ toast(`That's ${kb(bytes)}. Email from the hub takes about 3 MB of attachments, so untick a document and send the rest separately.`); return; }
+  const s = S();
+  const list = sel.map(c => `- ${c.doc}${c.reference ? ' (' + c.reference + ')' : ''}`).join('\n');
+  openCompose({subject: `Supplier documents: ${s.legalName || s.name}`, body: `Good day,\n\nPlease find attached the supplier documents for ${s.legalName || s.name}:\n${list}\n\n${supplierText()}\n\n${s.signoff || ''}`, pack: sel.map(c => c.id)});
+}
+async function packAttachments(ids){
+  const out = [];
+  for (const id of ids){
+    const c = get('compliance', id), f = fileOf(c); if (!f) continue;
+    const r = await (f.sp && window.fetchHubFile ? fetchHubFile(f) : fetch(fileUrl(f))); if (!r.ok) throw {code: 'file_missing', message: `${c.doc} could not be loaded`};
+    out.push({content: await blobToB64(await r.blob()), filename: f.name || (c.doc + '.pdf'), mimeType: f.type || 'application/pdf'});
+  }
+  return out;
+}
+async function uploadDocFile(input){
+  const file = input.files && input.files[0]; if (!file) return;
+  if (!ASSETS){ toast('Uploading needs the hub open inside Claude as its owner.'); return; }
+  const types = ['application/pdf','image/png','image/jpeg','image/webp'];
+  const type = types.includes(file.type) ? file.type : /\.pdf$/i.test(file.name) ? 'application/pdf' : '';
+  if (!type){ toast('Upload a PDF or an image (PNG, JPG).'); input.value = ''; return; }
+  const box = input.closest('.f'), lbl = box.querySelector('.fstate');
+  lbl.textContent = 'Uploading…';
+  try {
+    const r = await ASSETS.upload(file, {type});
+    box.querySelector('input[type=hidden]').value = JSON.stringify({id: r.id, name: file.name, size: r.sizeBytes, type: r.contentType, ...(r.sp ? {sp: true, driveId: r.driveId, itemId: r.itemId, webUrl: r.webUrl} : {})});
+    lbl.innerHTML = `${viewBtn({id: r.id, name: file.name, type: r.contentType, size: r.sizeBytes}, file.name, 'link')} (${kb(r.sizeBytes)}). Save to keep it.`;
+  } catch(e){
+    lbl.textContent = e?.code === 'too_large' ? 'That file is over 20 MB.' : e?.code === 'quota_or_state' ? 'The hub’s file storage is full.' : 'Upload failed. Try again.';
+  }
+  input.value = '';
+}
+function bindPublic(){
+  document.addEventListener('click', e => {
+    if (e.target.closest('dialog')) return;
+    if (e.target.closest('[data-copyprofile]')){
+      const txt = supplierText();
+      (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => toast('Supplier details copied')).catch(() => { openCompose({subject: 'Supplier details', body: txt}); });
+      return;
+    }
+    if (e.target.closest('[data-sendpack]')) return sendPack();
+  });
+  document.addEventListener('change', e => {
+    const p = e.target.closest('[data-pack]');
+    if (p){ p.checked ? PACK.add(p.dataset.pack) : PACK.delete(p.dataset.pack); render(); }
+  });
+  document.addEventListener('change', e => { if (e.target.matches('[data-upload]')) uploadDocFile(e.target); }, true);
+}
+
+/* ---------- render root ---------- */
+let rq = 0;
+function render(){
+  if (rq) return;
+  rq = requestAnimationFrame(() => {
+    rq = 0;
+    const {page, id} = route();
+    const ae = document.activeElement, sk = ae?.dataset?.search, pos = sk ? ae.selectionStart : 0;
+    const keep = ae && ae.id && $('#main').contains(ae) ? {id: ae.id, s: ae.selectionStart, e: ae.selectionEnd, top: ae.scrollTop} : null;
+    let html, title;
+    if (page === 'project'){ html = renderProject(id); title = 'Projects'; }
+    else if (page === 'deals'){ html = renderPipeline(); title = 'Pipeline'; }
+    else if (page === 'tenders'){ html = renderTenders(); title = 'Tenders'; }
+    else if (page === 'mail'){ html = renderMail(id); title = 'Mail'; }
+    else if (page === 'settings'){ html = renderSettings(); title = 'Business details'; }
+    else if (page === 'public'){ html = renderPublic(); title = 'Public sector'; }
+    else if (SCHEMA[page]){ html = renderList(page); title = SCHEMA[page].label; }
+    else { html = renderDash(); title = 'Dashboard'; }
+    $('#main').innerHTML = html;
+    $('#mtitle').textContent = title === 'Dashboard' ? 'Business Hub' : title;
+    renderNav(page === 'project' ? 'projects' : page);
+    if (sk){ const el = document.querySelector(`[data-search="${sk}"]`); if (el){ el.focus(); el.setSelectionRange(pos,pos); } }
+    else if (keep){ const el = document.getElementById(keep.id); if (el && el !== document.activeElement){ el.focus({preventScroll:true}); try { if (keep.s != null) el.setSelectionRange(keep.s, keep.e); el.scrollTop = keep.top; } catch(_){} } }
+  });
+}
+function renderNav(active){
+  $('#nav').innerHTML = NAV.map(([g, items]) => `<div class="navgroup"><h3>${g}</h3>${items.map(([k,l]) => `<a href="#/${k}" ${k===active || (active==='dashboard' && k==='dashboard') ? 'aria-current="page"' : ''}>${l}</a>`).join('')}</div>`).join('');
+}
+function setSync(){
+  const el = $('#sync');
+  el.classList.toggle('on', MODE === 'db');
+  el.querySelector('span').textContent = MODE === 'db' ? 'Synced across your devices' : MODE === 'local' ? 'Saved in this browser only. Open the published link to keep it in sync across devices.' : 'Connecting…';
+}
+
+/* ---------- forms ---------- */
+const dlg = $('#dlg'), form = $('#dlgForm');
+let editing = null;
+function fieldHTML(f, v){
+  const id = 'f_' + f.k, req = f.req ? ' required' : '';
+  const lab = `<label for="${id}">${esc(f.l)}${f.req ? ' <i aria-hidden="true">*</i>' : ''}</label>`;
+  const hint = f.hint ? `<span class="hint">${esc(f.hint)}</span>` : '';
+  const val = esc(v ?? '');
+  let input;
+  switch (f.t){
+    case 'textarea': input = `<textarea id="${id}" name="${f.k}"${req}>${val}</textarea>`; break;
+    case 'money': input = `<input id="${id}" name="${f.k}" type="number" min="0" step="any" inputmode="decimal" value="${val}"${req}>`; break;
+    case 'number': input = `<input id="${id}" name="${f.k}" type="number" step="${f.step || 'any'}" min="0" inputmode="decimal" value="${val}"${req}>`; break;
+    case 'select': input = `<select id="${id}" name="${f.k}"${req}><option value="">Choose…</option>${f.opt.map(o => `<option ${o===v?'selected':''}>${esc(o)}</option>`).join('')}</select>`; break;
+    case 'ref': {
+      const items = [...D[f.ref]].sort((a,b) => SCHEMA[f.ref].title(a).localeCompare(SCHEMA[f.ref].title(b)));
+      input = `<select id="${id}" name="${f.k}"${req}><option value="">${items.length ? 'Choose…' : `No ${SCHEMA[f.ref].label.toLowerCase()} yet`}</option>${items.map(x => `<option value="${x.id}" ${x.id===v?'selected':''}>${esc(SCHEMA[f.ref].title(x))}</option>`).join('')}</select>`;
+      break;
+    }
+    case 'asset': {
+      let fv = null; if (v) { if (typeof v === 'object') fv = v; else { try { fv = JSON.parse(v); } catch(_){ fv = null; } } }
+      return `<div class="f wide"><label>${esc(f.l)}</label><input type="hidden" name="${f.k}" value="${esc(fv ? JSON.stringify(fv) : '')}">
+        <span class="fstate">${fv ? `${viewBtn(fv, fv.name || 'Open file', 'link')}${fv.size ? ' (' + kb(fv.size) + ')' : ''}` : 'No file yet'}</span>
+        ${ASSETS ? '<input type="file" data-upload accept="application/pdf,image/png,image/jpeg,image/webp" aria-label="Upload file">' : '<span class="hint">Open the hub inside Claude as its owner to upload files.</span>'}</div>`;
+    }
+    case 'bool': return `<div class="f check"><input id="${id}" name="${f.k}" type="checkbox" ${v ? 'checked' : ''}><label for="${id}">${esc(f.l)}</label></div>`;
+    default: input = `<input id="${id}" name="${f.k}" type="${f.t}" value="${val}"${req}>`;
+  }
+  return `<div class="f ${f.wide || f.t === 'textarea' ? 'wide' : ''}">${lab}${input}${hint}</div>`;
+}
+function openForm(k, id, prefill){
+  if (k === 'quotes') return openQuote(id, prefill);
+  const s = SCHEMA[k];
+  let item;
+  if (id) item = get(k,id);
+  if (id && !item) return toast('That record no longer exists.');
+  if (!item){
+    item = {};
+    s.fields.forEach(f => { if (f.def !== undefined) item[f.k] = typeof f.def === 'function' ? f.def() : f.def; });
+    Object.assign(item, prefill || {});
+  }
+  editing = {k, id};
+  const meta = id && item.updatedAt ? `<span class="meta">Updated ${new Date(item.updatedAt).toLocaleString('en-ZA',{dateStyle:'medium',timeStyle:'short'})}</span>` : '';
+  const open = k === 'projects' && id && route().page !== 'project' ? `<button type="button" class="btn" data-goproj="${id}">Open project</button>` : '';
+  const lnk = (u, l) => u && /^https?:\/\//i.test(u) ? `<a class="btn" href="${esc(u)}" target="_blank" rel="noopener">${l}</a>` : '';
+  let doc = k === 'contracts' ? lnk(item.doc,'Open document') : k === 'compliance' ? lnk(item.link,'Open document') : '';
+  if (k === 'clients' && id && emails(item.email).length) doc = `<button type="button" class="btn" data-compose-to="${esc(emails(item.email).join(', '))}">Email</button><button type="button" class="btn" data-quote-client="${id}">New quote</button>`;
+  if (k === 'archive') doc = lnk(item.gmailUrl,'Open email');
+  const extra = k === 'archive' && (item.attachments || []).length ? `<div class="f wide"><label>Attachments</label><div class="row-btns">${item.attachments.map(f => viewBtn(f, f.name || 'Open', 'btn small')).join('')}</div></div>` : '';
+  if (k === 'tenders' && id) doc = lnk(item.briefingLink,'Join briefing') + (item.ocid ? lnk(ETP_URL + '#tender=' + encodeURIComponent(item.ocid) + '&tab=bid','Build bid in eTender Pro') : '') + lnk(item.docsUrl,'Bid documents') + lnk(item.sourceUrl,'Open on eTenders') + `<button type="button" class="btn" data-todeal="${id}">Add to pipeline</button>`;
+  form.innerHTML = `<div class="dhead"><h2>${id ? esc(s.title(item) || 'Edit ' + s.one) : 'New ' + esc(s.one)}</h2><button type="button" class="x" data-close aria-label="Close">×</button></div>
+  <div class="fields">${extra}${s.fields.map(f => fieldHTML(f, item[f.k])).join('')}</div>
+  <div class="dfoot">${id ? `<button type="button" class="btn danger" data-del>Delete</button>` : ''}${open}${doc}${meta}<span class="spacer"></span><button type="button" class="btn" data-close>Cancel</button><button type="submit" class="btn primary">${id ? 'Save changes' : 'Add ' + esc(s.one)}</button></div>`;
+  if (k === 'contributions'){
+    const p = form.querySelector('[name=partner]'), a = form.querySelector('[name=amount]');
+    const fill = () => { if (!a.value && p.value){ const pt = get('partners',p.value); if (pt?.commitment) a.value = pt.commitment; } };
+    p.addEventListener('change', fill); fill();
+  }
+  if (!dlg.open) dlg.showModal();
+  const first = form.querySelector('.fields input, .fields select, .fields textarea');
+  if (first && !id) first.focus();
+}
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  if (!form.checkValidity()){ form.reportValidity(); return; }
+  const {k, id} = editing, s = SCHEMA[k], fd = new FormData(form), body = {};
+  s.fields.forEach(f => {
+    if (f.t === 'bool') body[f.k] = form.querySelector(`[name="${f.k}"]`).checked;
+    else if (f.t === 'money' || f.t === 'number'){ const v = fd.get(f.k); body[f.k] = v === '' ? null : +v; }
+    else if (f.t === 'asset'){ const v = fd.get(f.k); try { body[f.k] = v ? JSON.parse(v) : null; } catch(_){ body[f.k] = null; } }
+    else body[f.k] = (fd.get(f.k) || '').toString().trim();
+  });
+  if (k === 'requirements' && !body.ref){
+    const n = D.requirements.filter(r => r.project === body.project).map(r => +(String(r.ref||'').match(/(\d+)$/)||[])[1] || 0);
+    body.ref = 'REQ-' + String((n.length ? Math.max(...n) : 0) + 1).padStart(3,'0');
+  }
+  if (k === 'archive' && id){ const old = get(k, id) || {}; ['attachments','threadId','gmailId'].forEach(x => { if (old[x] !== undefined) body[x] = old[x]; }); }
+  if (k === 'timesheets' && body.partner) lsSet('ops-me', body.partner);
+  if (k === 'invoices' && body.status === 'Paid' && !body.paidOn) body.paidOn = today();
+  const btn = form.querySelector('[type=submit]'); btn.disabled = true;
+  try {
+    await saveItem(k, id, body);
+    dlg.close();
+    toast(id ? 'Changes saved' : `${s.one[0].toUpperCase() + s.one.slice(1)} added`);
+  } catch(err){ writeError(err); }
+  finally { btn.disabled = false; }
+});
+form.addEventListener('click', async e => {
+  if (e.target.closest('[data-close]')) return dlg.close();
+  const ct = e.target.closest('[data-compose-to]');
+  if (ct){ dlg.close(); return openCompose({to: ct.dataset.composeTo}); }
+  const qc = e.target.closest('[data-quote-client]');
+  if (qc){ const c = get('clients', qc.dataset.quoteClient); dlg.close(); return openQuote(null, {client: qc.dataset.quoteClient, email: emails(c?.email).join(', '), contactName: c?.contact || ''}); }
+  const td = e.target.closest('[data-todeal]');
+  if (td) return tenderToDeal(td.dataset.todeal);
+  const gp = e.target.closest('[data-goproj]');
+  if (gp){ dlg.close(); go('project/' + gp.dataset.goproj); return; }
+  const del = e.target.closest('[data-del]');
+  if (del){
+    if (!del.classList.contains('armed')){ del.classList.add('armed'); del.textContent = 'Confirm delete'; return; }
+    const {k, id} = editing;
+    try { await deleteItem(k, id); dlg.close(); toast('Deleted'); if (k === 'projects' && route().page === 'project') go('projects'); }
+    catch(err){ writeError(err); }
+  }
+});
+
+/* ---------- events ---------- */
+document.addEventListener('click', e => {
+  if (e.target.closest('dialog')) return;
+  const add = e.target.closest('[data-add]');
+  if (add){ let pre = null; try { pre = add.dataset.prefill ? JSON.parse(add.dataset.prefill) : null; } catch(_){} return openForm(add.dataset.add, null, pre); }
+  const op = e.target.closest('[data-open]');
+  if (op && !e.target.closest('a[href]') && !e.target.closest('input')){
+    const [k, id] = op.dataset.open.split(':');
+    if (k === 'projects' && !op.dataset.edit) return go('project/' + id);
+    return openForm(k, id);
+  }
+  const fl = e.target.closest('[data-filter]');
+  if (fl){ const [k, ...v] = fl.dataset.filter.split(':'); ui[k].status = v.join(':'); return render(); }
+  const vw = e.target.closest('[data-view]');
+  if (vw){ ui.tenders.view = vw.dataset.view; return render(); }
+  const pt = e.target.closest('[data-ptab]');
+  if (pt){ ui.projTab = pt.dataset.ptab; return render(); }
+  const g = e.target.closest('[data-go]');
+  if (g) return go(g.dataset.go);
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.matches('tr[data-open]')) e.target.click();
+});
+document.addEventListener('input', e => {
+  const k = e.target.dataset?.search;
+  if (k){ ui[k].q = e.target.value; $('#listBody').innerHTML = listBody(k); }
+});
+document.addEventListener('change', e => {
+  if (e.target.matches('[data-import]') && e.target.files[0]){ importTenders(e.target.files[0]); e.target.value = ''; }
+});
+const rail = $('#rail'), scrim = $('#scrim'), menuBtn = $('#menuBtn');
+function menu(open){ rail.classList.toggle('open', open); scrim.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', open); }
+menuBtn.addEventListener('click', () => menu(!rail.classList.contains('open')));
+scrim.addEventListener('click', () => menu(false));
+rail.addEventListener('click', e => { if (e.target.closest('a')) menu(false); });
+window.addEventListener('hashchange', () => { if (dlg.open) dlg.close(); render(); $('#main').focus({preventScroll:true}); window.scrollTo(0,0); });
+
+let tt;
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('show'), 2600); }
+
+/* ---------- company switch ---------- */
+function applyBrand(){
+  document.documentElement.dataset.company = CO;
+  document.querySelectorAll('.brand').forEach(a => {
+    const sv = a.querySelector('svg'); if (sv) sv.outerHTML = C().mark;
+    const b = a.querySelector('b'); if (b) b.textContent = C().short;
+    a.setAttribute('aria-label', C().short + ' Business Hub home');
+  });
+  const sl = $('#siteLink'); if (sl) sl.href = C().site;
+  document.querySelectorAll('[data-co]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.co === CO)));
+}
+function setCompany(id){
+  if (!COMPANIES[id] || id === CO) return;
+  CO = id; try { localStorage.setItem('hub-company', id); } catch(e){}
+  refreshView(); PACK.clear();
+  Object.keys(SCHEMA).forEach(k => { ui[k].q = ''; ui[k].status = ''; });
+  ui.tenders.view = C().defView; MAIL.q = '';
+  applyBrand(); render(); toast('Showing ' + C().short);
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-co]'); if (b) setCompany(b.dataset.co); });
+
+/* open a company from a link: hub URL + #llp or #rtc */
+function companyFromHash(){ const h = location.hash.replace(/^#\/?/, ''); if (!COMPANIES[h]) return false; if (h !== CO) setCompany(h); location.hash = '#/dashboard'; return true; }
+window.addEventListener('hashchange', companyFromHash);
+
+/* ---------- boot ---------- */
+(h => { if (COMPANIES[h]){ CO = h; try { localStorage.setItem('hub-company', h); } catch(e){} history.replaceState(null, '', '#/dashboard'); } })(location.hash.replace(/^#\/?/, ''));
+bindModule(); bindPublic();
+ui.tenders.view = C().defView; applyBrand(); render(); setSync();
+(async () => {
+  const use = n => window.claude && typeof window.claude.use === 'function' ? window.claude.use(n).catch(() => null) : Promise.resolve(null);
+  Promise.all([use('mcp'), use('sample'), use('downloads'), use('assets')]).then(([m, sm, dl, as]) => { MCP = m; SAMPLE = sm; DL = dl; ASSETS = as; CAPS_READY = true; render(); });
+  let db = null;
+  try { db = window.claude && typeof window.claude.use === 'function' ? await window.claude.use('db') : null; } catch(e){ db = null; }
+  if (db){
+    DB = db; MODE = 'db'; setSync();
+    DB.doc('settings/business').onSnapshot(s => { SETTINGS_BY.rtc = s.exists ? s.data() : {}; render(); }, () => {});
+    DB.doc('settings/business-llp').onSnapshot(s => { SETTINGS_BY.llp = s.exists ? s.data() : {}; render(); }, () => {});
+    DB.doc('meta/etender').onSnapshot(s => { SYNC = s.exists ? s.data() : null; render(); }, () => {});
+    Object.keys(SCHEMA).forEach(k => {
+      DB.collection(k).onSnapshot(snap => {
+        RAW[k] = snap.docs.map(d => ({...d.data(), id: d.id})); refreshView(k);
+        render();
+      }, err => { if (err && err.code === 'revoked'){ MODE = 'local'; setSync(); } });
+    });
+  } else {
+    MODE = 'local'; loadLocal(); try { SETTINGS_BY.rtc = JSON.parse(lsGet(SET_KEY) || '{}'); SETTINGS_BY.llp = JSON.parse(lsGet(SET_KEY + '-llp') || '{}'); } catch(_){} setSync(); render();
+  }
+})();
+</script>
+</body>
+</html>
+
+
