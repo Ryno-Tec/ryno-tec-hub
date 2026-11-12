@@ -371,7 +371,7 @@ html.m365 .reply-sig,html.m365 .sigline,html.m365 .sigprev{display:none}
     <nav id="nav" aria-label="Sections"></nav>
     <div class="links">
       <a class="site" id="siteLink" href="https://www.ryno-tec.co.za" target="_blank" rel="noopener">Website ↗</a>
-      <a class="site" href="https://kagiso933.github.io/etender-pro/" target="_blank" rel="noopener">eTender Pro ↗</a>
+      <a class="site" href="https://tenders.ryno-tec.co.za/" target="_blank" rel="noopener">eTender Pro ↗</a>
     </div>
     <div class="sync" id="sync"><i></i><span>Connecting…</span></div>
   </aside>
@@ -855,7 +855,7 @@ function pick(o, ...keys){
 const toLocalDT = s => { if (!s) return ''; const d = new Date(s); if (isNaN(d)) return ''; return new Date(d - d.getTimezoneOffset()*6e4).toISOString().slice(0,16); };
 const truthy = v => v === true || /^(true|yes|y|1)$/i.test(String(v).trim());
 const urlish = s => /^https?:\/\//i.test(String(s||'').trim()) ? String(s).trim() : '';
-const ETP_URL = 'https://kagiso933.github.io/etender-pro/';
+const ETP_URL = 'https://tenders.ryno-tec.co.za/';
 const SITE_URL = 'https://www.ryno-tec.co.za';
 const ETP_MODE = {online:'Online','online and in person':'Online and in person','in person':'In person',none:'No briefing',unknown:'Not stated'};
 const isEtp = r => r && typeof r.briefing === 'object' && r.briefing !== null && 'closingDate' in r && 'department' in r;
