@@ -133,9 +133,9 @@ td.primary{font-weight:600;color:var(--ink)}
 .attn{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
 .attn li{border-bottom:1px solid var(--line)}
 .attn li:last-child{border-bottom:0}
-.attn button{all:unset;box-sizing:border-box;display:flex;gap:12px;width:100%;padding:12px 14px;cursor:pointer;color:var(--text)}
-.attn button:hover{background:var(--accent-soft)}
-.attn button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.attn>li>button{all:unset;box-sizing:border-box;display:flex;gap:12px;width:100%;padding:12px 14px;cursor:pointer;color:var(--text)}
+.attn>li>button:hover{background:var(--accent-soft)}
+.attn>li>button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 .attn .why{font-size:13px;color:var(--muted);margin-left:auto;text-align:right;white-space:nowrap}
 .attn .tag{flex:none;width:4px;border-radius:2px;background:var(--warn)}
 .attn .tag.bad{background:var(--bad)}

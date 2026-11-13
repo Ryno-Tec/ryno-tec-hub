@@ -64,7 +64,7 @@ s = s.replace('Check your Sent folder in Gmail before trying again.', 'Check you
 s = s.replace("'Gmail didn’t", "'Outlook didn’t").replace("? 'Gmail didn’t", "? 'Outlook didn’t")
 s = s.replace("open in Gmail to view", "open in Outlook to view")
 # forwarding steps don't apply: this mailbox is the business mailbox
-rep("function setupNote(){", "function setupNote(){\n  if (window.HUB_M365) return '';")
+rep("function setupNote(){", "function setupNote(){\n  if (window.HUB_M365) return CO === 'llp' ? `<p class=\"note-box\">Lesego Laka mail is in its own Microsoft 365 tenant, so it doesn't show here. Emails to Lesego Laka addresses that are forwarded to kagiso@ryno-tec.co.za appear in this list.</p>` : '';")
 
 # 5b. The document viewer needs the SharePoint location, not just the old file id.
 rep("data-viewfile=\"${esc(JSON.stringify({id: f.id, name: f.name || '', type: f.type || '', size: f.size || 0}))}\"",

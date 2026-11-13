@@ -133,9 +133,9 @@ td.primary{font-weight:600;color:var(--ink)}
 .attn{list-style:none;margin:0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
 .attn li{border-bottom:1px solid var(--line)}
 .attn li:last-child{border-bottom:0}
-.attn button{all:unset;box-sizing:border-box;display:flex;gap:12px;width:100%;padding:12px 14px;cursor:pointer;color:var(--text)}
-.attn button:hover{background:var(--accent-soft)}
-.attn button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.attn>li>button{all:unset;box-sizing:border-box;display:flex;gap:12px;width:100%;padding:12px 14px;cursor:pointer;color:var(--text)}
+.attn>li>button:hover{background:var(--accent-soft)}
+.attn>li>button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 .attn .why{font-size:13px;color:var(--muted);margin-left:auto;text-align:right;white-space:nowrap}
 .attn .tag{flex:none;width:4px;border-radius:2px;background:var(--warn)}
 .attn .tag.bad{background:var(--bad)}
@@ -1514,7 +1514,7 @@ async function fetchThread(id, fresh){
 }
 const mailDate = s => { if (!s) return ''; const d = new Date(s), now = new Date(); return d.toDateString() === now.toDateString() ? d.toLocaleTimeString('en-ZA',{hour:'2-digit',minute:'2-digit'}) : d.toLocaleDateString('en-ZA',{day:'numeric',month:'short', year: d.getFullYear() === now.getFullYear() ? undefined : 'numeric'}); };
 function setupNote(){
-  if (window.HUB_M365) return '';
+  if (window.HUB_M365) return CO === 'llp' ? `<p class="note-box">Lesego Laka mail is in its own Microsoft 365 tenant, so it doesn't show here. Emails to Lesego Laka addresses that are forwarded to kagiso@ryno-tec.co.za appear in this list.</p>` : '';
   const a = esc(S().mailAddress);
   return `<details class="note-box"><summary>No mail for ${a} yet? Set up forwarding</summary>
   ${CO === 'llp' ? `<ol><li>In the Microsoft 365 admin centre, open the mailbox for <b>${a}</b> and turn on forwarding to the Gmail account connected to Claude, keeping a copy in the mailbox.</li>

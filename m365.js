@@ -217,8 +217,11 @@
   document.addEventListener('visibilitychange', () => { if (!document.hidden && Date.now() - lastPoll > 30000) pollAll(); });
 
   /* ---------------- mcp: Outlook mail in the shape the hub expects ---------------- */
-  const b64u = s => String(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-  const unb64u = s => { let t = String(s).replace(/-/g, '+').replace(/_/g, '/'); while (t.length % 4) t += '='; return t; };
+  // Outlook conversation ids can contain '/', '+', '=' and also '-', '_'; the hub puts the id in the
+  // page address (#/mail/<id>), so only the characters that would break it are swapped, reversibly.
+  const b64u = s => String(s).replace(/\//g, '!').replace(/\+/g, '*').replace(/=/g, '~');
+  const unb64u = s => String(s).replace(/!/g, '/').replace(/\*/g, '+').replace(/~/g, '=');
+  const seen = new Map(); // thread id -> message ids from the last list, as a fallback for opening it
   const who = r => r && r.emailAddress ? (r.emailAddress.name && r.emailAddress.name !== r.emailAddress.address ? `${r.emailAddress.name} <${r.emailAddress.address}>` : r.emailAddress.address) : '';
   const addr = r => (r && r.emailAddress && r.emailAddress.address) || '';
   const SEL = 'id,subject,from,toRecipients,ccRecipients,receivedDateTime,sentDateTime,bodyPreview,conversationId,isRead,hasAttachments,webLink';
@@ -231,23 +234,26 @@
   function parseQuery(q) {
     q = String(q || '');
     const folder = /\bin:sent\b/i.test(q) ? 'sentitems' : 'inbox';
+    const addrs = [...new Set((q.match(/\b(?:to|cc|from|deliveredto):([^\s()]+@[^\s()]+)/gi) || []).map(x => x.split(':').slice(1).join(':').toLowerCase()))];
     const text = q.replace(/\([^)]*\b(to|cc|from|deliveredto):[^)]*\)/gi, ' ').replace(/\b(in|to|cc|from|deliveredto):\S+/gi, ' ').replace(/\b(OR|AND)\b/g, ' ').replace(/\s+/g, ' ').trim();
-    return { folder, text };
+    return { folder, text, addrs };
   }
   async function searchThreads(args) {
-    const { folder, text } = parseQuery(args.query);
-    const top = Math.min(50, Math.max(10, (args.pageSize || 30) * 2));
+    const { folder, text, addrs } = parseQuery(args.query);
+    const top = addrs.length ? 100 : Math.min(50, Math.max(10, (args.pageSize || 30) * 2));
     let path = `/me/mailFolders/${folder}/messages?$top=${top}&$select=${SEL}`;
     path += text ? `&$search=${encodeURIComponent('"' + text.replace(/"/g, '') + '"')}` : '&$orderby=receivedDateTime desc';
     const r = await graph('GET', path, null, text ? { headers: { ConsistencyLevel: 'eventual' } } : undefined);
     const byConv = new Map();
-    for (const m of r.value || []) {
+    const mine = m => !addrs.length || [m.from, ...(m.toRecipients || []), ...(m.ccRecipients || [])].some(x => addrs.includes(addr(x).toLowerCase()));
+    for (const m of (r.value || []).filter(mine)) {
       const k = m.conversationId;
       if (!byConv.has(k)) byConv.set(k, []);
       byConv.get(k).push(m);
     }
     const threads = [...byConv.entries()].map(([conv, ms]) => {
       ms.sort((a, b) => String(a.receivedDateTime).localeCompare(String(b.receivedDateTime)));
+      seen.set(b64u(conv), ms.map(m => m.id));
       return { id: b64u(conv), messageCount: ms.length, messages: ms.map(toMsg), viewUrl: ms[ms.length - 1].webLink };
     }).sort((a, b) => String(b.messages[b.messages.length - 1].date).localeCompare(String(a.messages[a.messages.length - 1].date)));
     return { threads: threads.slice(0, args.pageSize || 30) };
@@ -255,7 +261,11 @@
   async function getThread(args) {
     const conv = unb64u(args.threadId);
     const r = await graph('GET', `/me/messages?$filter=${encodeURIComponent(`conversationId eq '${conv.replace(/'/g, "''")}'`)}&$top=50&$select=${SEL},body`, null, { headers: { Prefer: 'outlook.body-content-type="text"' } });
-    const ms = (r.value || []).sort((a, b) => String(a.receivedDateTime).localeCompare(String(b.receivedDateTime)));
+    let list = r.value || [];
+    if (!list.length && seen.has(args.threadId)) {
+      list = (await Promise.all(seen.get(args.threadId).map(id => graph('GET', `/me/messages/${id}?$select=${SEL},body`, null, { headers: { Prefer: 'outlook.body-content-type="text"' } }).catch(() => null)))).filter(Boolean);
+    }
+    const ms = list.sort((a, b) => String(a.receivedDateTime).localeCompare(String(b.receivedDateTime)));
     const out = [];
     for (const m of ms) {
       const msg = { ...toMsg(m), plaintextBody: (m.body && m.body.content) || m.bodyPreview || '' };
