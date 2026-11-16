@@ -31,7 +31,7 @@
       el.setAttribute('aria-labelledby', 'm365gateTitle');
       document.body.appendChild(el);
     }
-    el.innerHTML = `<div class="m365card"><h1 id="m365gateTitle">Ryno-Tec Business Hub</h1><p>${msg}</p>${showButton ? '<button type="button" class="btn primary" id="m365signin">Sign in with Microsoft</button>' : ''}</div>`;
+    el.innerHTML = `<div class="m365card"><img src="brand/rtc-app-icon.png" alt="" width="72" height="72" style="display:block;margin:0 auto 14px;border-radius:16px"><h1 id="m365gateTitle">Ryno-Tec Business Hub</h1><p>${msg}</p>${showButton ? '<button type="button" class="btn primary" id="m365signin">Sign in with Microsoft</button>' : ''}</div>`;
     const b = document.getElementById('m365signin');
     if (b && pca) { b.addEventListener('click', () => pca.loginRedirect({ scopes: SCOPES, prompt: 'select_account' })); b.focus(); }
   }
