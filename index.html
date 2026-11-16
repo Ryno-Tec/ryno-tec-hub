@@ -2193,6 +2193,34 @@ window.addEventListener('hashchange', companyFromHash);
 
 /* ---------- boot ---------- */
 (h => { if (COMPANIES[h]){ CO = h; try { localStorage.setItem('hub-company', h); } catch(e){} history.replaceState(null, '', '#/dashboard'); } })(location.hash.replace(/^#\/?/, ''));
+/* ---------- one-off data updates (updates/*.json), each applied once, in order ---------- */
+async function applyHubUpdates(){
+  try {
+    const idx = await (await fetch('updates/index.json', {cache:'no-store'})).json();
+    const metaRef = DB.doc('meta/updates');
+    const applied = await new Promise(res => { const off = metaRef.onSnapshot(sn => { res((sn.exists && sn.data().applied) || []); setTimeout(() => off && off(), 0); }, () => res(null)); });
+    if (!applied) return;
+    const done = [...applied]; let n = 0;
+    for (const name of idx.files || []){
+      if (done.includes(name)) continue;
+      const u = await (await fetch('updates/' + name, {cache:'no-store'})).json();
+      for (const op of u.ops || []){
+        const now = new Date().toISOString();
+        const ref = DB.collection(op.col).doc(op.id);
+        if (op.create){
+          const exists = await new Promise(res => { const off = ref.onSnapshot(sn => { res(!!sn.exists); setTimeout(() => off && off(), 0); }, () => res(true)); });
+          if (exists) continue;            // never overwrite something already in the hub
+        }
+        await ref.update({...(op.create || {}), ...(op.set || {}), company: op.company || 'rtc', updatedAt: now, ...(op.create ? {createdAt: now} : {})});
+        n++;
+      }
+      done.push(name);
+      await metaRef.set({applied: done, updatedAt: new Date().toISOString()});
+    }
+    if (n) toast(`Hub updated: ${n} task and timesheet changes applied.`);
+  } catch(e){ /* no updates or offline: nothing to do */ }
+}
+
 bindModule(); bindPublic();
 ui.tenders.view = C().defView; applyBrand(); render(); setSync();
 (async () => {
@@ -2205,6 +2233,7 @@ ui.tenders.view = C().defView; applyBrand(); render(); setSync();
     DB.doc('settings/business').onSnapshot(s => { SETTINGS_BY.rtc = s.exists ? s.data() : {}; render(); }, () => {});
     DB.doc('settings/business-llp').onSnapshot(s => { SETTINGS_BY.llp = s.exists ? s.data() : {}; render(); }, () => {});
     DB.doc('meta/etender').onSnapshot(s => { SYNC = s.exists ? s.data() : null; render(); }, () => {});
+    applyHubUpdates();
     Object.keys(SCHEMA).forEach(k => {
       DB.collection(k).onSnapshot(snap => {
         RAW[k] = snap.docs.map(d => ({...d.data(), id: d.id})); refreshView(k);

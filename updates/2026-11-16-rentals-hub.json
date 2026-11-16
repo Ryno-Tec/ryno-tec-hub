@@ -1,0 +1,492 @@
+{
+ "note": "Work completed up to 16 Nov 2026",
+ "ops": [
+  {
+   "col": "projects",
+   "id": "prj-rentals",
+   "create": {
+    "name": "RTC Rentals platform",
+    "status": "Active",
+    "client": "rynotec-internal",
+    "rate": 0,
+    "notes": "Property management SaaS for SA landlords. Live at https://rentals.ryno-tec.co.za, repo Ryno-Tec/rtc-rentals (Supabase + GitHub Pages)."
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-27",
+   "set": {
+    "status": "Done"
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-28",
+   "set": {
+    "status": "Done",
+    "notes": "Live on Microsoft 365: SharePoint lists, Outlook mail, Entra sign-in."
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-29",
+   "set": {
+    "status": "Done",
+    "notes": "Hosted on GitHub Pages at https://hub.ryno-tec.co.za (Let's Encrypt certificate) instead of Azure Static Web Apps."
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-01",
+   "create": {
+    "title": "Move-in / move-out inspections with photos, owner and tenant confirm",
+    "project": "prj-rentals",
+    "phase": "Build",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-02",
+   "create": {
+    "title": "In-app lease (Law For All template) with signing and witnesses",
+    "project": "prj-rentals",
+    "phase": "Build",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-03",
+   "create": {
+    "title": "Maintenance: tenant fault logging, owner view per property, maintenance team logins, statuses",
+    "project": "prj-rentals",
+    "phase": "Build",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-04",
+   "create": {
+    "title": "Domestic employment contract for maintenance staff",
+    "project": "prj-rentals",
+    "phase": "Build",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-05",
+   "create": {
+    "title": "Installable app (PWA) and app-store packaging plan (Android, iOS, Huawei)",
+    "project": "prj-rentals",
+    "phase": "Build",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-06",
+   "create": {
+    "title": "Shared mailbox rentals@ryno-tec.co.za on the privacy page",
+    "project": "prj-rentals",
+    "phase": "Build",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-07",
+   "create": {
+    "title": "App lock: PIN and Face ID / fingerprint",
+    "project": "prj-rentals",
+    "phase": "Build",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-08",
+   "create": {
+    "title": "Profile photos, SARS tax reports and tenant tax-year statements",
+    "project": "prj-rentals",
+    "phase": "Build",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-09",
+   "create": {
+    "title": "Yearly rent increase as a percentage or fixed rand amount",
+    "project": "prj-rentals",
+    "phase": "Build",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-10",
+   "create": {
+    "title": "Owner who also rents: dual role with a switch",
+    "project": "prj-rentals",
+    "phase": "Build",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-11",
+   "create": {
+    "title": "Email via Brevo SMTP (ryno-tec.co.za authenticated)",
+    "project": "prj-rentals",
+    "phase": "Setup",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-12",
+   "create": {
+    "title": "Sign in with Google (verified app)",
+    "project": "prj-rentals",
+    "phase": "Setup",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-13",
+   "create": {
+    "title": "How-to guide in the site and app",
+    "project": "prj-rentals",
+    "phase": "Build",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-14",
+   "create": {
+    "title": "RTC Rentals logo (keyhole home, Option C) across app and store icons",
+    "project": "prj-rentals",
+    "phase": "Brand",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-15",
+   "create": {
+    "title": "Ozow online rent payments to each landlord's own Ozow account (One API)",
+    "project": "prj-rentals",
+    "phase": "Payments",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-16",
+   "create": {
+    "title": "Ryno-Tec plans, 0.5% collection fee (max R75) and monthly invoices",
+    "project": "prj-rentals",
+    "phase": "Payments",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-17",
+   "create": {
+    "title": "Ozow secure-integration checklist: amount/currency/reference checks, alerts, hourly and nightly reconciliation, key rotation runbook",
+    "project": "prj-rentals",
+    "phase": "Payments",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-18",
+   "create": {
+    "title": "Remove tenants (delete if added by mistake, otherwise archive and keep history)",
+    "project": "prj-rentals",
+    "phase": "Build",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-19",
+   "create": {
+    "title": "Owners change their own plan (highest plan in a month is billed)",
+    "project": "prj-rentals",
+    "phase": "Payments",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-20",
+   "create": {
+    "title": "Ryno-Tec admin dashboard (landlords, income, invoices, alerts, fee settings)",
+    "project": "prj-rentals",
+    "phase": "Build",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-21",
+   "create": {
+    "title": "Microsoft sign-in: Entra app created by script, email + xms_edov claims",
+    "project": "prj-rentals",
+    "phase": "Setup",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-22",
+   "create": {
+    "title": "Ozow merchant account approved for Ryno-Tec",
+    "project": "prj-rentals",
+    "phase": "Payments",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-todo-01",
+   "create": {
+    "title": "Connect Ozow One API keys (Site Code, Client ID, Client Secret) and do a small test payment",
+    "project": "prj-rentals",
+    "phase": "Payments",
+    "status": "To do",
+    "priority": "High",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-todo-02",
+   "create": {
+    "title": "Add Ryno-Tec Ozow keys as GitHub secrets so owners can pay invoices online (token needs Edge Functions secrets write)",
+    "project": "prj-rentals",
+    "phase": "Payments",
+    "status": "To do",
+    "priority": "Medium",
+    "due": "2026-11-30",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-todo-03",
+   "create": {
+    "title": "Microsoft sign-in: publisher verification (blue tick) with Partner ID 7176400",
+    "project": "prj-rentals",
+    "phase": "Setup",
+    "status": "To do",
+    "priority": "Medium",
+    "due": "2026-11-20",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-todo-04",
+   "create": {
+    "title": "Run the RTC Rentals test checklist end to end",
+    "project": "prj-rentals",
+    "phase": "Testing",
+    "status": "To do",
+    "priority": "High",
+    "due": "2026-11-23",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-todo-05",
+   "create": {
+    "title": "Sign in with Apple",
+    "project": "prj-rentals",
+    "phase": "Setup",
+    "status": "To do",
+    "priority": "Low",
+    "due": "2026-12-15",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-todo-06",
+   "create": {
+    "title": "Android (Google Play / AppGallery) and iPhone app builds",
+    "project": "prj-rentals",
+    "phase": "Release",
+    "status": "To do",
+    "priority": "Medium",
+    "due": "2026-12-31",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-rent-todo-07",
+   "create": {
+    "title": "Renew Supabase access token for deploys (expires mid-Feb 2027)",
+    "project": "prj-rentals",
+    "phase": "Ops",
+    "status": "To do",
+    "priority": "Medium",
+    "due": "2027-02-05",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-tools-1116-01",
+   "create": {
+    "title": "Email signature in hub mail (Outlook) and Outlook itself, rhino logo",
+    "project": "prj-tools",
+    "phase": "Hub",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-tools-1116-02",
+   "create": {
+    "title": "Rhino logo exports (mark, app icon, lockups) on ryno-tec.co.za/brand",
+    "project": "prj-tools",
+    "phase": "Brand",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-tools-1116-03",
+   "create": {
+    "title": "ryno-tec.co.za/admin points to the Microsoft 365 hub, RTC Rentals admin and eTender Pro, with logos",
+    "project": "prj-tools",
+    "phase": "Website",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "tasks",
+   "id": "tsk-tools-1116-04",
+   "create": {
+    "title": "Hub secure padlock fixed (logo served from the hub, insecure loads upgraded)",
+    "project": "prj-tools",
+    "phase": "Hub",
+    "status": "Done",
+    "priority": "Medium",
+    "due": "2026-11-16",
+    "notes": ""
+   }
+  },
+  {
+   "col": "timesheets",
+   "id": "ts-2026-11-16-rentals",
+   "create": {
+    "date": "2026-11-16",
+    "project": "prj-rentals",
+    "hours": 2.5,
+    "billable": false,
+    "invoiced": false,
+    "desc": "Ozow merchant onboarding; Ozow One API rent payments, billing, plans and checks; tenant removal; self-service plans; admin dashboard; Microsoft sign-in app; Option C logo."
+   }
+  },
+  {
+   "col": "timesheets",
+   "id": "ts-2026-11-16-tools",
+   "create": {
+    "date": "2026-11-16",
+    "project": "prj-tools",
+    "hours": 1,
+    "billable": false,
+    "invoiced": false,
+    "desc": "Hub email signature for Outlook, rhino logo exports, admin landing page, hub certificate/padlock fix."
+   }
+  }
+ ]
+}
