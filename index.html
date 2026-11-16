@@ -1085,7 +1085,7 @@ const DEFAULT_SETTINGS = {
   validityDays: 30,
   paymentTerms: 'Payment due within 30 days of invoice date.',
   quoteTerms: 'Prices are in South African rand. This quotation is valid until the date shown.',
-  signoff: 'Kind regards,', sigName: 'Kagiso Tshukudu', sigTitle: 'Founder & Principal Engineer', sigReg: true, sigBee: true, sigLogo: true, sigLogoUrl: 'https://hub.ryno-tec.co.za/brand/email-signature-logo.png'
+  signoff: 'Kind regards,', sigName: 'Kagiso Tshukudu', sigTitle: 'Founder & Principal Engineer', sigReg: true, sigBee: true, sigLogo: true, sigLogoUrl: 'https://hub.ryno-tec.co.za/brand/email-signature-mark.png'
 };
 const DEFAULT_SETTINGS_LLP = {
   name: 'Lesego Laka Projects', tagline: 'Facilities, grounds, agriculture & supply',
@@ -1181,16 +1181,18 @@ function signatureHtml(){
   const contact = [s.mailAddress && a('mailto:' + s.mailAddress, s.mailAddress), s.phone && a('tel:' + s.phone.replace(/[^\d+]/g, ''), s.phone), web && a('https://' + web, web)].filter(Boolean).join(' <span style="color:#bbbbbb">|</span> ');
   let logoUrl = String(s.sigLogoUrl || (CO === 'llp' ? '' : DEFAULT_SETTINGS.sigLogoUrl)).trim().replace(/^http:\/\//i, 'https://');
   // The logo is served from the hub itself (same secure address), not from the website.
-  if (/^https:\/\/(www\.)?ryno-tec\.co\.za\/brand\/email-signature-logo\.png$/i.test(logoUrl)) logoUrl = DEFAULT_SETTINGS.sigLogoUrl;
+  if (/^https:\/\/((www\.)?ryno-tec\.co\.za|hub\.ryno-tec\.co\.za)\/brand\/email-signature-logo\.png$/i.test(logoUrl)) logoUrl = DEFAULT_SETTINGS.sigLogoUrl;
   s.sigLogoUrl = logoUrl;
-  const logo = s.sigLogo !== false && /^https:\/\//.test(logoUrl) ? `<tr><td style="padding:0 0 10px 0"><a href="https://${esc(web || 'ryno-tec.co.za')}" style="text-decoration:none"><img src="${esc(s.sigLogoUrl)}" width="180" height="58" alt="${esc(s.legalName || s.name)}" style="display:block;border:0;width:180px;height:58px"></a></td></tr>` : '';
-  return `<table cellpadding="0" cellspacing="0" border="0" style="margin-top:14px;border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;background:#ffffff">${logo}<tr><td style="border-left:3px solid ${C().accentHex};padding:2px 0 2px 12px;background:#ffffff">
+  const showLogo = s.sigLogo !== false && /^https:\/\//.test(logoUrl);
+  const site = 'https://' + (web || 'ryno-tec.co.za');
+  const td = 'font-family:Arial,Helvetica,sans-serif;background:#ffffff';
+  const logoCell = showLogo ? `<td valign="top" style="${td};padding:2px 14px 0 0;width:84px"><a href="${esc(site)}" style="text-decoration:none"><img src="${esc(logoUrl)}" width="84" height="84" alt="${esc(s.legalName || s.name)}" style="display:block;border:0;width:84px;height:84px"></a></td>` : '';
+  return `<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin-top:14px;border-collapse:collapse;background:#ffffff"><tr>${logoCell}<td valign="top" style="${td};border-left:2px solid ${C().accentHex};padding:0 0 0 14px">
 <div style="font-size:15px;font-weight:bold;color:#1a1a1a;line-height:1.3">${esc(s.sigName || '')}</div>
-${s.sigTitle ? `<div style="font-size:13px;color:#666666;line-height:1.4">${esc(s.sigTitle)}</div>` : ''}
-<div style="font-size:13px;font-weight:bold;color:#1a1a1a;line-height:1.4;margin-top:8px">${esc(s.legalName || s.name)}</div>
-${s.tagline ? `<div style="font-size:12px;color:#666666;line-height:1.4">${esc(s.tagline)}</div>` : ''}
-${contact ? `<div style="font-size:13px;line-height:1.5;margin-top:6px">${contact}</div>` : ''}
-${legal.length ? `<div style="font-size:11px;color:#888888;line-height:1.5;margin-top:6px">${esc(legal.join(' \u00b7 '))}</div>` : ''}
+${s.sigTitle ? `<div style="font-size:13px;color:#555555;line-height:1.4">${esc(s.sigTitle)}</div>` : ''}
+<div style="font-size:13px;color:#1a1a1a;line-height:1.4;margin-top:6px"><b>${esc(s.legalName || s.name)}</b>${s.tagline ? `<span style="color:#888888"> &middot; ${esc(s.tagline)}</span>` : ''}</div>
+${contact ? `<div style="font-size:13px;line-height:1.5;margin-top:4px">${contact}</div>` : ''}
+${legal.length ? `<div style="font-size:11px;color:#999999;line-height:1.5;margin-top:6px">${esc(legal.join(' \u00b7 '))}</div>` : ''}
 </td></tr></table>`;
 }
 function bodyHtml(text){
