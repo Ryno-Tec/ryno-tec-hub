@@ -1,0 +1,65 @@
+{
+ "note": "Back-filled timesheets (same hours as 16 Nov)",
+ "ops": [
+  {
+   "col": "timesheets",
+   "id": "ts-2026-10-16-rentals",
+   "create": {
+    "date": "2026-10-16",
+    "project": "prj-rentals",
+    "hours": 2.5,
+    "billable": false,
+    "invoiced": false,
+    "desc": "RTC Rentals: tenant app (rent, receipts, repairs, messages)."
+   }
+  },
+  {
+   "col": "timesheets",
+   "id": "ts-2026-11-13-rentals",
+   "create": {
+    "date": "2026-11-13",
+    "project": "prj-rentals",
+    "hours": 2.5,
+    "billable": false,
+    "invoiced": false,
+    "desc": "RTC Rentals: tenants, leases and rent ledger; Supabase set-up; deploy to rentals.ryno-tec.co.za; rent due on any day."
+   }
+  },
+  {
+   "col": "timesheets",
+   "id": "ts-2026-11-07-tools",
+   "create": {
+    "date": "2026-11-07",
+    "project": "prj-tools",
+    "hours": 1,
+    "billable": false,
+    "invoiced": false,
+    "desc": "eTender Pro: improvements."
+   }
+  },
+  {
+   "col": "timesheets",
+   "id": "ts-2026-11-12-tools",
+   "create": {
+    "date": "2026-11-12",
+    "project": "prj-tools",
+    "hours": 1,
+    "billable": false,
+    "invoiced": false,
+    "desc": "Business Hub on Microsoft 365: SharePoint lists, mail archive, eTender Pro links."
+   }
+  },
+  {
+   "col": "timesheets",
+   "id": "ts-2026-11-13-tools",
+   "create": {
+    "date": "2026-11-13",
+    "project": "prj-tools",
+    "hours": 1,
+    "billable": false,
+    "invoiced": false,
+    "desc": "Business Hub: Outlook threads, per-company mail, document list; eTender Pro custom domain."
+   }
+  }
+ ]
+}
