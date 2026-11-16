@@ -1148,9 +1148,9 @@ function renderSettings(){
     ${row('Address', s.address)}${row('Banking', bank)}
     ${row('Quotes valid for', s.validityDays ? s.validityDays + ' days' : '')}${row('Payment terms', s.paymentTerms)}
   </dl>
-  <section class="panel sigpanel"><div class="sechead"><h2>Email signature</h2><div class="row-btns"><button class="btn" data-edit-settings>Edit</button><button class="btn primary" data-copysig>Copy for Gmail</button></div></div>
+  <section class="panel sigpanel"><div class="sechead"><h2>Email signature</h2><div class="row-btns"><button class="btn" data-edit-settings>Edit</button><button class="btn primary" data-copysig>${window.HUB_M365 ? 'Copy for Outlook' : 'Copy for Gmail'}</button></div></div>
     <div class="sigcard" id="sigCard">${signatureHtml()}</div>
-    <p class="muted small">The hub adds this below your sign-off on every email, reply, quote and supplier pack. To use it in Gmail too, choose Copy for Gmail, then paste it in Gmail Settings, General, Signature.</p></section>`;
+    <p class="muted small">The hub adds this below your sign-off on every email, reply, quote and supplier pack. ${window.HUB_M365 ? 'To use it when you write in Outlook itself, choose Copy for Outlook, then in Outlook on the web open Settings, Accounts, Signatures, paste it and set it as the default for new messages and replies.' : 'To use it in Gmail too, choose Copy for Gmail, then paste it in Gmail Settings, General, Signature.'}</p></section>`;
 }
 const sdlg = () => $('#sdlg'), sform = () => $('#sForm');
 function openSettings(){
@@ -1192,7 +1192,7 @@ function bodyHtml(text){
   return `<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#222222;line-height:1.5">${String(text || '').trim().split(/\n{2,}/).map(p => `<p style="margin:0 0 12px">${esc(p).replace(/\n/g, '<br>')}</p>`).join('')}</div>`;
 }
 function withSignature(text, on){
-  if (!on || window.HUB_M365) return {body: text};
+  if (!on) return {body: text};
   const t = String(text || '').replace(/\s+$/, '');
   return {body: t + '\n\n' + signatureText(), htmlBody: bodyHtml(t) + signatureHtml()};
 }
@@ -1401,8 +1401,8 @@ function quoteEmail(q){
 ${tot('Subtotal', t.sub)}${s.vatRegistered && q.vat ? tot('VAT 15%', t.vat) : ''}${tot('Total', t.total, true)}</table>
 <p>This quotation is valid until ${esc(fmtDate(q.validUntil))}. ${esc(s.paymentTerms || '')}</p>
 <p>Reply to this email if you have any questions or would like to go ahead.</p>
-<p style="margin:0">${esc(s.signoff || '')}</p>${window.HUB_M365 ? '' : signatureHtml()}</div></div>`;
-  const body = `${greet}\n\nThank you for the opportunity. Please find attached our quotation ${q.number} for ${q.title || 'the work discussed'}.\n\nTotal: ${money(t.total)}${s.vatRegistered && q.vat ? ' (incl. VAT)' : ''}\nValid until: ${fmtDate(q.validUntil)}\n${s.paymentTerms || ''}\n\nReply to this email if you have any questions or would like to go ahead.\n\n${s.signoff ? s.signoff + '\n' : ''}${window.HUB_M365 ? '' : signatureText()}`;
+<p style="margin:0">${esc(s.signoff || '')}</p>${signatureHtml()}</div></div>`;
+  const body = `${greet}\n\nThank you for the opportunity. Please find attached our quotation ${q.number} for ${q.title || 'the work discussed'}.\n\nTotal: ${money(t.total)}${s.vatRegistered && q.vat ? ' (incl. VAT)' : ''}\nValid until: ${fmtDate(q.validUntil)}\n${s.paymentTerms || ''}\n\nReply to this email if you have any questions or would like to go ahead.\n\n${s.signoff ? s.signoff + '\n' : ''}${signatureText()}`;
   return {subject: `Quotation ${q.number}: ${q.title || s.name}`, htmlBody, body};
 }
 async function quoteAction(kind, btn){
@@ -1752,7 +1752,7 @@ function bindModule(){
     if (t.closest('[data-edit-settings]')) return openSettings();
     if (t.closest('[data-copysig]')){
       const html = signatureHtml(), txt = signatureText();
-      const done = () => toast('Signature copied. Paste it into Gmail Settings, General, Signature.');
+      const done = () => toast(window.HUB_M365 ? 'Signature copied. Paste it into Outlook: Settings, Accounts, Signatures.' : 'Signature copied. Paste it into Gmail Settings, General, Signature.');
       const fallback = () => { const el = $('#sigCard'); const r = document.createRange(); r.selectNodeContents(el); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); try { document.execCommand('copy') ? done() : toast('Press Ctrl+C (or Cmd+C) to copy the selected signature.'); } catch(_){ toast('Press Ctrl+C (or Cmd+C) to copy the selected signature.'); } };
       try { if (window.ClipboardItem && navigator.clipboard?.write) navigator.clipboard.write([new ClipboardItem({'text/html': new Blob([html], {type:'text/html'}), 'text/plain': new Blob([txt], {type:'text/plain'})})]).then(done, fallback); else fallback(); } catch(_){ fallback(); }
       return;
