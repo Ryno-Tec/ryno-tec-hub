@@ -31,7 +31,7 @@
       el.setAttribute('aria-labelledby', 'm365gateTitle');
       document.body.appendChild(el);
     }
-    el.innerHTML = `<div class="m365card"><img src="brand/rtc-app-icon.png" alt="" width="72" height="72" style="display:block;margin:0 auto 14px;border-radius:16px"><h1 id="m365gateTitle">Ryno-Tec Business Hub</h1><p>${msg}</p>${showButton ? '<button type="button" class="btn primary" id="m365signin">Sign in with Microsoft</button>' : ''}</div>`;
+    el.innerHTML = `<div class="m365card"><img src="brand/rtc-app-icon.png" alt="" width="72" height="72" style="display:block;margin:0 auto 14px;border-radius:16px"><h1 id="m365gateTitle">Ryno-Tec Business Hub</h1><p>${msg}</p>${showButton ? `<button type="button" class="mssignin" id="m365signin"><svg width="21" height="21" viewBox="0 0 21 21" aria-hidden="true"><rect x="1" y="1" width="9" height="9" fill="#f25022"/><rect x="11" y="1" width="9" height="9" fill="#7fba00"/><rect x="1" y="11" width="9" height="9" fill="#00a4ef"/><rect x="11" y="11" width="9" height="9" fill="#ffb900"/></svg><span>Sign in with Microsoft</span></button>` : ''}</div>`;
     const b = document.getElementById('m365signin');
     if (b && pca) { b.addEventListener('click', () => pca.loginRedirect({ scopes: SCOPES, prompt: 'select_account' })); b.focus(); }
   }
