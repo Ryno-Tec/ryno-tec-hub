@@ -22,7 +22,7 @@ jobs:
   check:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Links, assets and JSON
         run: python3 .github/scripts/site-check.py .
       - name: JavaScript syntax
@@ -37,7 +37,7 @@ jobs:
             echo '::warning::index.html differs from what tools/build.py makes from src/hub-artifact.html. Changes made only in index.html are lost at the next build; copy them into src/ or tools/build.py.'
           fi
           cp /tmp/published.html index.html
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with: { python-version: '3.12' }
       - name: Sign-in screen renders without errors
         run: |
@@ -57,15 +57,15 @@ jobs:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main   # latest main, including data commits made just before (eTender)
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: .
       - id: deploy
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 
   live:
     needs: publish
