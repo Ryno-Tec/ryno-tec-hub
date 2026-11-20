@@ -1,0 +1,8 @@
+# Weekly update checks, grouped into one pull request per ecosystem. CI must pass before merging.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule: { interval: weekly, day: monday, time: "06:00", timezone: Africa/Johannesburg }
+    groups: { all: { patterns: ["*"] } }
+    open-pull-requests-limit: 3

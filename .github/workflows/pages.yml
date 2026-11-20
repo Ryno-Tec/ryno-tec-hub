@@ -1,0 +1,81 @@
+name: Check and publish
+
+# Every push and pull request: site checks. Pushes to main: publish to GitHub Pages, then check
+# the live site. Publishing from this workflow starts once the repository variable
+# PAGES_VIA_ACTIONS is 'true' and Settings → Pages → Source is "GitHub Actions" (see the
+# Ryno-Tec DevOps runbook). Until then GitHub keeps publishing straight from the branch.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  workflow_call:      # used by other workflows here that commit (their commits don't trigger pushes)
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Links, assets and JSON
+        run: python3 .github/scripts/site-check.py .
+      - name: JavaScript syntax
+        run: |
+          find . -name '*.js' -not -path '*/vendor/*' -not -path '*/node_modules/*' -not -name '*.min.js' -print0 \
+            | xargs -0 -r -n1 node --check
+      - name: Built page matches its source
+        run: |
+          cp index.html /tmp/published.html
+          python3 tools/build.py >/dev/null
+          if ! cmp -s index.html /tmp/published.html; then
+            echo '::warning::index.html differs from what tools/build.py makes from src/hub-artifact.html. Changes made only in index.html are lost at the next build; copy them into src/ or tools/build.py.'
+          fi
+          cp /tmp/published.html index.html
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Sign-in screen renders without errors
+        run: |
+          pip install -q playwright && python -m playwright install --with-deps chromium >/dev/null
+          python3 -m http.server 8000 >/dev/null 2>&1 &
+          python3 .github/scripts/hub_smoke.py http://localhost:8000/
+
+  publish:
+    needs: check
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.PAGES_VIA_ACTIONS == 'true'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main   # latest main, including data commits made just before (eTender)
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deploy
+        uses: actions/deploy-pages@v4
+
+  live:
+    needs: publish
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Live site answers with the new version
+        run: |
+          for i in 1 2 3 4 5 6 7 8; do
+            body="$(curl -sS --max-time 20 "https://hub.ryno-tec.co.za/?v=$(date +%s)" || true)"
+            if echo "$body" | grep -q "Ryno-Tec Business Hub"; then echo "ok https://hub.ryno-tec.co.za"; exit 0; fi
+            sleep 15
+          done
+          echo "::error::https://hub.ryno-tec.co.za did not serve the expected page after publishing."; exit 1

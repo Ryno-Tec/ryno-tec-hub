@@ -73,8 +73,10 @@ rep('placeholder="Write your reply, or jot notes and let Claude draft it"', 'pla
 
 # 6. Sign-in screen and signed-in footer styles.
 rep('</style>', '''#m365gate{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:var(--bg,#f4f4f4);padding:16px}
-#m365gate .m365card{max-width:420px;width:100%;background:var(--panel,#fff);border:1px solid var(--line,#ddd);border-radius:10px;padding:28px;text-align:center}
-#m365gate h1{font-size:1.4rem;margin:0 0 8px}#m365gate p{margin:0 0 20px;color:var(--muted,#666)}
+#m365gate .m365card{max-width:420px;width:100%;margin:auto;color:var(--text);background:var(--surface,#fff);border:1px solid var(--line,#ddd);border-radius:10px;padding:28px;text-align:center}
+#m365gate h1{font-size:1.4rem;margin:0 0 8px;color:var(--ink)}
+#m365gate .mssignin{display:inline-flex;align-items:center;gap:12px;height:41px;padding:0 12px;background:#fff;color:#5e5e5e;border:1px solid #8c8c8c;border-radius:0;font:600 15px 'Segoe UI',system-ui,sans-serif;cursor:pointer}
+#m365gate .mssignin:hover{background:#f3f3f3}#m365gate .mssignin:focus-visible{outline:2px solid var(--accent);outline-offset:2px}#m365gate p{margin:0 0 20px;color:var(--muted,#666)}
 #m365who{margin:12px 0 0;word-break:break-all}
 html.m365 .reply-sig,html.m365 .sigline,html.m365 .sigprev{display:none}
 </style>''')
